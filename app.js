@@ -23,10 +23,10 @@ var views = {
       '</form>'
     ].join('\n');
   },
-  notes: function(username, notes) {
+  notes: function(req, notes) {
     return [
       '<form method="post" action="/logout">',
-      '  <input type="submit" value="Logout ' + username + '">',
+      '  <input type="submit" value="Logout ' + req.loggedInUser + '">',
       '</form>',
       '<form method="post">',
       '  <textarea cols="80" rows="20" name="notes">' + notes + '</textarea>',
@@ -41,7 +41,7 @@ var routes = {
     if (!req.loggedInUser)
       return res.end(views.login());
     db.get('notes-' + req.loggedInUser, function(err, value) {
-      res.end(views.notes(req.loggedInUser, err ? '' : value));
+      res.end(views.notes(req, err ? '' : value));
     });
   },
   'POST /': function(req, res, next) {
