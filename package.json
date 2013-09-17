@@ -1,0 +1,28 @@
+{
+  "name": "security-adventure",
+  "version": "0.0.1",
+  "description": "Go on an educational Web security adventure!",
+  "main": "app.js",
+  "dependencies": {
+    "cookie": "0.1.0",
+    "level": "0.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "security",
+    "educational",
+    "guide",
+    "tutorial",
+    "learn",
+    "workshop"
+  ],
+  "author": {
+    "name": "Atul Varma",
+    "email": "varmaa@gmail.com",
+    "url": "http://toolness.com"
+  },
+  "license": "BSD-2-Clause"
+}
