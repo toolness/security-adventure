@@ -4,8 +4,11 @@ var querystring = require('querystring');
 var cookie = require('cookie');
 var level = require('level');
 
+var VALID_USERNAME = /^[A-Za-z0-9_]+$/;
+
 var db = level(__dirname + '/db/');
 
+// These view functions all return strings of HTML.
 var views = {
   401: function() {
     return 'You must <a href="/">log in</a> first.';
@@ -39,14 +42,14 @@ var views = {
 };
 
 var routes = {
-  'GET /': function(req, res) {
+  'GET /': function showLoginFormOrUserNotes(req, res) {
     if (!req.loggedInUser)
       return res.end(views.login());
     db.get('notes-' + req.loggedInUser, function(err, value) {
       res.end(views.notes(req, err ? '' : value));
     });
   },
-  'POST /': function(req, res, next) {
+  'POST /': function updateUserNotes(req, res, next) {
     if (!req.loggedInUser) return next(401);
     var notes = req.body.notes || '';
     db.put('notes-' + req.loggedInUser, notes, function(err) {
@@ -55,36 +58,37 @@ var routes = {
       return res.redirect("/");
     });
   },
-  'POST /login': function(req, res, next) {
-    function createSession() {
-      res.setHeader("Set-Cookie",
-                    cookie.serialize('session', req.body.username, {
-                      maxAge: 60 * 60 * 24
-                    }));
+  'POST /login': function authenticateAndLoginUser(req, res, next) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var createSession = function createSession() {
+      res.setHeader("Set-Cookie", cookie.serialize('session', username, {
+        maxAge: 60 * 60 * 24
+      }));
       return res.redirect("/");
-    }
+    };
+
+    if (!VALID_USERNAME.test(username)) return res.end('Invalid username.');
+    if (!password) return res.end('Please provide a password.');
 
     if (req.body.action == 'register') {
-      if (!/^[A-Za-z0-9_]+$/.test(req.body.username))
-        return res.end('Invalid username.');
-      return db.get('password-' + req.body.username, function(err, value) {
+      return db.get('password-' + username, function(err, value) {
         if (!err)
           return res.end('That user already exists.');
-        db.put('password-' + req.body.username,
-               req.body.password, function(err) {
-                 if (err) return next(err);
-                 return createSession();
-               });
+        db.put('password-' + username, password, function(err) {
+          if (err) return next(err);
+          return createSession();
+        });
       });
     } else {
-      db.get('password-' + req.body.username, function(err, value) {
-        if (!err && value == req.body.password)
+      db.get('password-' + username, function(err, value) {
+        if (!err && value == password)
           return createSession();
         res.end('Invalid username or password.');
       });
     }
   },
-  'POST /logout': function(req, res) {
+  'POST /logout': function logoutUser(req, res) {
     res.setHeader("Set-Cookie", cookie.serialize('session', '', {
                     expires: new Date(0)
                   }));
