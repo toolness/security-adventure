@@ -124,7 +124,7 @@ var app = http.createServer(function(req, res) {
       req.headers['content-type'] == 'application/x-www-form-urlencoded') {
     var bodyChunks = [];
 
-    req.on('data', function(chunk) { bodyChunks.push(chunk); });
+    req.on('data', bodyChunks.push.bind(bodyChunks));
     req.on('end', function() {
       var data = Buffer.concat(bodyChunks).toString();
       req.body = querystring.parse(data);
