@@ -5,11 +5,16 @@
   "main": "app.js",
   "dependencies": {
     "cookie": "0.1.0",
-    "level": "0.16.0"
+    "levelup": "0.16.0",
+    "leveldown": "0.8.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "memdown": "0.3.0",
+    "request": "2.27.0",
+    "tap-prettify": "0.0.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node node_modules/.bin/tap-prettify test/*.js"
   },
   "keywords": [
     "security",
