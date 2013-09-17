@@ -7,6 +7,13 @@ var level = require('level');
 var db = level(__dirname + '/db/');
 
 var views = {
+  401: function() {
+    return 'You must <a href="/">log in</a> first.';
+  },
+  404: function(req) {
+    return "Alas, I do not know anything about " +
+           "<code>" + req.urlInfo.pathname + "</code>."
+  },
   login: function() {
     return [
       '<form method="post" action="/login">',
@@ -29,73 +36,86 @@ var views = {
   }
 };
 
+var routes = {
+  'GET /': function(req, res) {
+    if (!req.loggedInUser)
+      return res.end(views.login());
+    db.get('notes-' + req.loggedInUser, function(err, value) {
+      res.end(views.notes(req.loggedInUser, err ? '' : value));
+    });
+  },
+  'POST /': function(req, res, next) {
+    if (!req.loggedInUser) return next(401);
+    var notes = req.body.notes || '';
+    db.put('notes-' + req.loggedInUser, notes, function(err) {
+      if (err) return next(err);
+
+      return res.redirect("/");
+    });
+  },
+  'POST /login': function(req, res) {
+    db.get('password-' + req.body.username, function(err, value) {
+      if (!err && value == req.body.password) {
+        res.setHeader("Set-Cookie",
+                      cookie.serialize('session', req.body.username, {
+                        maxAge: 60 * 60 * 24
+                      }));
+        return res.redirect("/");
+      }
+      res.end('Invalid username or password.');
+    });
+  },
+  'POST /logout': function(req, res) {
+    res.setHeader("Set-Cookie", cookie.serialize('session', '', {
+                    expires: new Date(0)
+                  }));
+    return res.redirect("/");
+  }
+};
+
 var app = http.createServer(function(req, res) {
   var cookies = cookie.parse(req.headers['cookie'] || '');
-  var urlInfo = url.parse(req.url);
-  var loggedInUser = cookies.session;
+
+  req.urlInfo = url.parse(req.url);
+  req.loggedInUser = cookies.session;
+  req.body = {};
 
   res.setHeader('Content-Type', 'text/html');
   res.statusCode = 200;
 
-  if (urlInfo.pathname == '/') {
-    if (loggedInUser) {
-      if (req.method == 'GET') {
-        return db.get('notes-' + loggedInUser, function(err, value) {
-          res.end(views.notes(loggedInUser, err ? '' : value));
-        });
-      } else if (req.method == 'POST') {
-        return parseBody(req, function(body) {
-          var notes = body.notes || '';
-          db.put('notes-' + loggedInUser, notes, function(err) {
-            if (err) throw err;
+  var routeName = req.method + ' ' + req.urlInfo.pathname;
+  var route = routes[routeName];
+  var next = function next(err) {
+    if (typeof(err) == 'number')
+      return res.end(views[err](req));
+    console.error(err);
+    if (err.stack) console.error(err.stack);
+    res.statusCode = 500;
+    res.end("Sorry, something exploded.");
+  };
 
-            return redirect(res);
-          });
-        });
-      }
-    } else {
-      return res.end(views.login());
-    }
-  } else if (urlInfo.pathname == '/login' && req.method == 'POST') {
-    return parseBody(req, function(body) {
-      db.get('password-' + body.username, function(err, value) {
-        if (!err && value == body.password) {
-          res.setHeader("Set-Cookie",
-                        cookie.serialize('session', body.username, {
-                          maxAge: 60 * 60 * 24
-                        }));
-          return redirect(res);
-        }
-        res.end('Invalid username or password.');
-      });
+  if (!route) return next(404);
+
+  res.redirect = function(where) {
+    res.setHeader("Location", where);
+    res.statusCode = 303;
+    res.end();
+  };
+
+  if (req.method == 'POST' &&
+      req.headers['content-type'] == 'application/x-www-form-urlencoded') {
+    var bodyChunks = [];
+
+    req.on('data', function(chunk) { bodyChunks.push(chunk); });
+    req.on('end', function() {
+      var data = Buffer.concat(bodyChunks).toString();
+      req.body = querystring.parse(data);
+      route(req, res, next);
     });
-  } else if (urlInfo.pathname == '/logout' && req.method == 'POST') {
-      res.setHeader("Set-Cookie", cookie.serialize('session', '', {
-                      expires: new Date(0)
-                    }));
-      return redirect(res);
+  } else {
+    route(req, res, next);
   }
-
-  res.statusCode = 404;
-  return res.end("Alas, I do not know anything about " +
-                 "<code>" + urlInfo.pathname + "</code>.");
 });
-
-function redirect(res) {
-  res.setHeader("Location", "/");
-  res.statusCode = 303;
-  res.end();
-}
-
-function parseBody(req, cb) {
-  var chunks = [];
-
-  req.on('data', function(chunk) { chunks.push(chunk); });
-  req.on('end', function() {
-    var data = Buffer.concat(chunks).toString();
-    cb(querystring.parse(data));
-  });
-}
 
 db.on('ready', function() {
   db.put('password-admin', 'blarg', function(err) {
