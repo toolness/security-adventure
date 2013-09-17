@@ -107,8 +107,7 @@ var app = http.createServer(function(req, res) {
   var next = function next(err) {
     if (typeof(err) == 'number')
       return res.end(views[err](req));
-    console.error(err);
-    if (err.stack) console.error(err.stack);
+    console.error(err.stack || err);
     res.statusCode = 500;
     res.end("Sorry, something exploded.");
   };
