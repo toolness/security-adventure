@@ -12,7 +12,7 @@ function oneRequest(options, cb) {
   if (typeof(options) == 'string') options = {url: options};
 
   var server = http.createServer(app);
-  var db = levelup('/', {factory: dbfactory});
+  var db = levelup('/', {db: dbfactory});
   app.db = db;
   server.listen(function() {
     options.url = 'http://localhost:' + server.address().port + options.url;
