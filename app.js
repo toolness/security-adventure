@@ -15,7 +15,7 @@ var views = {
   },
   404: function(req) {
     return "Alas, I do not know anything about " +
-           "<code>" + decodeURI(req.urlInfo.pathname) + "</code>.";
+           "<code>" + req.urlInfo.pathname + "</code>.";
   },
   login: function() {
     return [
@@ -68,7 +68,8 @@ var routes = {
       return res.redirect("/");
     };
 
-    if (!VALID_USERNAME.test(username)) return res.end('Invalid username.');
+    if (!VALID_USERNAME.test(username))
+      return res.end('Invalid username: ' + username);
     if (!password) return res.end('Please provide a password.');
 
     if (req.body.action == 'register') {

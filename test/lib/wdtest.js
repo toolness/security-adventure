@@ -28,8 +28,10 @@ function wdtest(name, cb) {
         tSubclass.browser = Object.create(fiberBrowser);
         tSubclass.browser.$ = tSubclass.browser.elementByCssSelector;
         tSubclass.browser.get = function(path) {
-          return fiberBrowser.get(server.baseURL + path);
+          if (path[0] == '/') path = server.baseURL + path;
+          return fiberBrowser.get(path);
         };
+        tSubclass.server = server;
         tSubclass.db = new FiberLevelObject(app.db);
 
         try {

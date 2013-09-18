@@ -70,13 +70,13 @@ test("POST /login w/ bad username rejects user", function(t) {
     method: 'POST',
     url: '/login',
     form: {
-      username: 'meh!',
+      username: 'meh.',
       password: 'meh',
       action: 'login'
     }
   }, function(err, res, body) {
     t.notOk(err);
-    t.has(body, /invalid username\./i);
+    t.has(body, /invalid username: meh\./i);
     t.equal(res.statusCode, 200);
     t.end();
   });
