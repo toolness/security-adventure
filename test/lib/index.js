@@ -1,16 +1,5 @@
-var http = require('http');
-var MemDOWN = require('memdown');
-var levelup = require('levelup');
+var util = require('./util');
 
-exports.level = function level() {
-  return levelup('/', {db: function(loc) { return new MemDOWN(loc); }});
-};
-
-exports.serve = function serve(app, cb) {
-  var server = http.createServer(app);
-  server.listen(function() {
-    server.baseURL = 'http://localhost:' + server.address().port;
-    cb(server);
-  });
-  return server;
-};
+exports.serve = util.serve;
+exports.level = util.level;
+exports.wdtest = require('./wdtest');

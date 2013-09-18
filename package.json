@@ -11,6 +11,9 @@
   "devDependencies": {
     "memdown": "0.3.0",
     "request": "2.27.0",
+    "fibers": "1.0.1",
+    "phantom-wd-runner": "0.0.1",
+    "wd": "0.1.4",
     "tap-prettify": "0.0.2"
   },
   "scripts": {
