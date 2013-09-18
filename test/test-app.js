@@ -1,21 +1,6 @@
 var test = require('tap-prettify').test;
-var request = require('request');
 
-var testUtil = require('./lib');
-var app = require('../app');
-
-function appRequest(options, cb) {
-  if (typeof(options) == 'string') options = {url: options};
-
-  app.db = options.db || testUtil.level();
-  testUtil.serve(app, function(server) {
-    options.url = server.baseURL + options.url;
-    request(options, function(err, res, body) {
-      server.close();
-      cb(err, res, body, app.db);
-    });
-  });
-}
+var appRequest = require('./lib').appRequest;
 
 test("GET / w/o session shows login form", function(t) {
   appRequest('/', function(err, res, body) {
