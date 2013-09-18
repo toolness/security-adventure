@@ -15,7 +15,7 @@ var views = {
   },
   404: function(req) {
     return "Alas, I do not know anything about " +
-           "<code>" + req.urlInfo.pathname + "</code>."
+           "<code>" + decodeURI(req.urlInfo.pathname) + "</code>.";
   },
   login: function() {
     return [
