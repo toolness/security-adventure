@@ -16,7 +16,7 @@ and [cookie][] are the only dependencies outside of node core.
 vulnerabilities, such as:
 
 * [Cross-Site Request Forgery][csrf] on all forms
-* [Reflected Cross Site Scripting][reflected] on the 404 page
+* [Reflected Cross Site Scripting][reflected] on alert messages
 * [Sensitive Data Exposure][sde] for password storage
 * [Regular Expression Denial of Service][redos] for username validation
 * [Insecure Direct Object References][idor] /

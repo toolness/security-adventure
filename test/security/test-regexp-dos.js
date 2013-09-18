@@ -16,7 +16,7 @@ if (process.argv[2] == 'GO') {
     }
   }, function(err, res, body) {
     if (err) throw err;
-    if (!/invalid username:/i.test(body))
+    if (!/invalid username\./i.test(body))
       throw new Error("unexpected body: " + body);
     process.exit(0);
   });

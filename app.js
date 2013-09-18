@@ -10,41 +10,34 @@ var VALID_USERNAME = /^([A-Za-z0-9_]+)+$/;
 
 // These view functions all return strings of HTML.
 var views = {
-  401: function() {
-    return 'You must <a href="/">log in</a> first.';
-  },
-  404: function(req) {
-    return "Alas, I do not know anything about " +
-           "<code>" + req.urlInfo.pathname + "</code>.";
-  },
-  login: function() {
-    return [
-      '<form method="post" action="/login">',
-      '  username: <input type="text" name="username" required>',
-      '  password: <input type="password" name="password" required>',
-      '  <button type="submit" name="action" value="login">Login</button>',
-      '  <button type="submit" name="action" value="register">Register',
-      '    new user</button>',
-      '</form>'
-    ].join('\n');
-  },
-  notes: function(req, notes) {
-    return [
-      '<form method="post" action="/logout">',
-      '  <input type="submit" value="Logout ' + req.loggedInUser + '">',
-      '</form>',
-      '<form method="post">',
-      '  <textarea cols="80" rows="20" name="notes">' + notes + '</textarea>',
-      '  <input type="submit" value="Update Notes">',
-      '</form>'
-    ].join('\n');
-  }
+  401: function() { return 'You must <a href="/">log in</a> first.'; },
+  404: function() { return "Alas, this is a 404."; },
+  login: function(req) { return [
+    req.query.msg ? '<p style="background: yellow">' + req.query.msg + '</p>'
+                  : '',
+    '<form method="post" action="/login">',
+    '  username: <input type="text" name="username" required>',
+    '  password: <input type="password" name="password" required>',
+    '  <button type="submit" name="action" value="login">Login</button>',
+    '  <button type="submit" name="action" value="register">Register',
+    '    new user</button>',
+    '</form>'
+  ].join('\n'); },
+  notes: function(req, notes) { return [
+    '<form method="post" action="/logout">',
+    '  <input type="submit" value="Logout ' + req.loggedInUser + '">',
+    '</form>',
+    '<form method="post">',
+    '  <textarea cols="80" rows="20" name="notes">' + notes + '</textarea>',
+    '  <input type="submit" value="Update Notes">',
+    '</form>'
+  ].join('\n'); }
 };
 
 var routes = {
   'GET /': function showLoginFormOrUserNotes(req, res) {
     if (!req.loggedInUser)
-      return res.end(views.login());
+      return res.end(views.login(req));
     app.db.get('notes-' + req.loggedInUser, function(err, value) {
       res.end(views.notes(req, err ? '' : value));
     });
@@ -69,13 +62,13 @@ var routes = {
     };
 
     if (!VALID_USERNAME.test(username))
-      return res.end('Invalid username: ' + username);
-    if (!password) return res.end('Please provide a password.');
+      return res.redirect("/", 'Invalid username.');
+    if (!password) return res.redirect("/", 'Please provide a password.');
 
     if (req.body.action == 'register') {
       return app.db.get('password-' + username, function(err, value) {
         if (!err)
-          return res.end('That user already exists.');
+          return res.redirect("/", 'That user already exists.');
         app.db.put('password-' + username, password, function(err) {
           if (err) return next(err);
           return createSession();
@@ -85,7 +78,7 @@ var routes = {
       app.db.get('password-' + username, function(err, value) {
         if (!err && value == password)
           return createSession();
-        res.end('Invalid username or password.');
+        res.redirect("/", 'Invalid username or password.');
       });
     }
   },
@@ -100,7 +93,8 @@ var routes = {
 var app = function(req, res) {
   var cookies = cookie.parse(req.headers['cookie'] || '');
 
-  req.urlInfo = url.parse(req.url);
+  req.urlInfo = url.parse(req.url, true);
+  req.query = req.urlInfo.query;
   req.loggedInUser = cookies.session;
   req.body = {};
 
@@ -121,7 +115,8 @@ var app = function(req, res) {
 
   if (!route) return next(404);
 
-  res.redirect = function(where) {
+  res.redirect = function(where, msg) {
+    if (msg) where += "?msg=" + encodeURIComponent(msg);
     res.setHeader("Location", where);
     res.statusCode = 303;
     res.end();

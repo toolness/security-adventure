@@ -76,7 +76,7 @@ test("POST /login w/ bad username rejects user", function(t) {
     }
   }, function(err, res, body) {
     t.notOk(err);
-    t.has(body, /invalid username: meh\./i);
+    t.has(body, /invalid username\./i);
     t.equal(res.statusCode, 200);
     t.end();
   });
@@ -93,7 +93,7 @@ test("POST /login w/ existing username rejects user", function(t) {
     }
   }, function(err, res, body, db) {
     t.notOk(err);
-    t.equal(res.statusCode, 303);
+    t.equal(res.statusCode, 200);
 
     appRequest({
       db: db,
