@@ -24,6 +24,9 @@ The idea is for learners to first exploit these vulnerabilities, so they
 understand how they work, and then to modify the code to implement
 defenses against them.
 
+When appropriate, workshop problems will be "standalone", i.e. they may
+involve writing brand-new code rather than changing something in `app.js`.
+
 Ideally, the tutorial will also teach users about more recent innovations in 
 browser security, such as [Content Security Policy][csp] and
 [HTTP Strict Transport Security][hsts].
