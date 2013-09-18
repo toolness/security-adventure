@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/toolness/security-adventure.png)](https://travis-ci.org/toolness/security-adventure)
+
 There is not much here yet.
 
 In the future, this will be a [workshopper][] workshop like
