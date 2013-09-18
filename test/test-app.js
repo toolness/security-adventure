@@ -1,22 +1,15 @@
-var http = require('http');
 var test = require('tap-prettify').test;
-var MemDOWN = require('memdown');
-var levelup = require('levelup');
 var request = require('request');
 
+var testUtil = require('./lib');
 var app = require('../app');
-
-function level() {
-  return levelup('/', {db: function(loc) { return new MemDOWN(loc); }});
-}
 
 function appRequest(options, cb) {
   if (typeof(options) == 'string') options = {url: options};
 
-  var server = http.createServer(app);
-  app.db = options.db || level();
-  server.listen(function() {
-    options.url = 'http://localhost:' + server.address().port + options.url;
+  app.db = options.db || testUtil.level();
+  testUtil.serve(app, function(server) {
+    options.url = server.baseURL + options.url;
     request(options, function(err, res, body) {
       server.close();
       cb(err, res, body, app.db);
