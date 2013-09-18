@@ -6,38 +6,49 @@ var request = require('request');
 
 var app = require('../app');
 
-var dbfactory = function (location) { return new MemDOWN(location); };
+function level() {
+  return levelup('/', {db: function(loc) { return new MemDOWN(loc); }});
+}
 
-function oneRequest(options, cb) {
+function appRequest(options, cb) {
   if (typeof(options) == 'string') options = {url: options};
 
   var server = http.createServer(app);
-  var db = levelup('/', {db: dbfactory});
-  app.db = db;
+  app.db = options.db || level();
   server.listen(function() {
     options.url = 'http://localhost:' + server.address().port + options.url;
     request(options, function(err, res, body) {
       server.close();
-      db.close(function(closeErr) {
-        cb(err || closeErr, res, body);
-      });
+      cb(err, res, body, app.db);
     });
   });
 }
 
-test("accessing / w/o session shows login form", function(t) {
-  oneRequest('/', function(err, res, body) {
+test("GET / w/o session shows login form", function(t) {
+  appRequest('/', function(err, res, body) {
     t.notOk(err);
     t.has(body, /login/);
+    t.equal(res.statusCode, 200);
     t.end();
   });
 });
 
-test("accessing /blarg returns 404", function(t) {
-  oneRequest('/blarg', function(err, res, body) {
+test("GET /blarg returns 404", function(t) {
+  appRequest('/blarg', function(err, res, body) {
     t.notOk(err);
     t.has(body, /alas/i);
     t.equal(res.statusCode, 404);
+    t.end();
+  });
+});
+
+test("POST / w/o session returns 401", function(t) {
+  appRequest({
+    method: 'POST',
+    url: '/'
+  }, function(err, res, body) {
+    t.notOk(err);
+    t.equal(res.statusCode, 401);
     t.end();
   });
 });
