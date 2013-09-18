@@ -16,6 +16,7 @@ vulnerabilities, such as:
 * [Cross-Site Request Forgery][csrf] on all forms
 * [Reflected Cross Site Scripting][reflected] on the 404 page
 * [Sensitive Data Exposure][sde] for password storage
+* [Regular Expression Denial of Service][redos] for username validation
 * [Insecure Direct Object References][idor] /
   [Broken Authentication and Session Management][brokenauth] for session keys
 
@@ -47,3 +48,4 @@ in the future. They will also be encouraged to read Michal Zalewski's
   [csp]: https://developer.mozilla.org/en-US/docs/Security/CSP/Introducing_Content_Security_Policy
   [hsts]: https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security
   [tangled]: http://lcamtuf.coredump.cx/tangled/
+  [redos]: https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS

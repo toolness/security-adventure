@@ -5,7 +5,7 @@ var cookie = require('cookie');
 var level = require('levelup');
 
 var PORT = process.env.PORT || 3000;
-var VALID_USERNAME = /^[A-Za-z0-9_]+$/;
+var VALID_USERNAME = /^([A-Za-z0-9_]+)+$/;
 
 // These view functions all return strings of HTML.
 var views = {
