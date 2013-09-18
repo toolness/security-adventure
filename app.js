@@ -5,6 +5,7 @@ var cookie = require('cookie');
 var level = require('levelup');
 
 var PORT = process.env.PORT || 3000;
+var FORM_TYPE = /^application\/x-www-form-urlencoded(;.*)?$/;
 var VALID_USERNAME = /^([A-Za-z0-9_]+)+$/;
 
 // These view functions all return strings of HTML.
@@ -125,8 +126,7 @@ var app = function(req, res) {
     res.end();
   };
 
-  if (req.method == 'POST' &&
-      req.headers['content-type'] == 'application/x-www-form-urlencoded') {
+  if (req.method == 'POST' && FORM_TYPE.test(req.headers['content-type'])) {
     var bodyChunks = [];
 
     req.on('data', bodyChunks.push.bind(bodyChunks));

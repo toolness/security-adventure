@@ -45,3 +45,85 @@ test("POST / w/o session returns 401", function(t) {
     t.end();
   });
 });
+
+test("POST /login w/ bad credentials rejects user", function(t) {
+  appRequest({
+    method: 'POST',
+    url: '/login',
+    form: {
+      username: 'meh',
+      password: 'meh',
+      action: 'login'
+    }
+  }, function(err, res, body) {
+    t.notOk(err);
+    t.has(body, /invalid username or password/i);
+    t.equal(res.statusCode, 200);
+    t.end();
+  });
+});
+
+test("POST /login w/o password rejects user", function(t) {
+  appRequest({
+    method: 'POST',
+    url: '/login',
+    form: {
+      username: 'meh',
+      password: '',
+      action: 'login'
+    }
+  }, function(err, res, body) {
+    t.notOk(err);
+    t.has(body, /provide a password/i);
+    t.equal(res.statusCode, 200);
+    t.end();
+  });
+});
+
+test("POST /login w/ bad username rejects user", function(t) {
+  appRequest({
+    method: 'POST',
+    url: '/login',
+    form: {
+      username: 'meh!',
+      password: 'meh',
+      action: 'login'
+    }
+  }, function(err, res, body) {
+    t.notOk(err);
+    t.has(body, /invalid username\./i);
+    t.equal(res.statusCode, 200);
+    t.end();
+  });
+});
+
+test("POST /login w/ existing username rejects user", function(t) {
+  appRequest({
+    method: 'POST',
+    url: '/login',
+    form: {
+      username: 'meh',
+      password: 'meh',
+      action: 'register'
+    }
+  }, function(err, res, body, db) {
+    t.notOk(err);
+    t.equal(res.statusCode, 303);
+
+    appRequest({
+      db: db,
+      method: 'POST',
+      url: '/login',
+      form: {
+        username: 'meh',
+        password: 'meh',
+        action: 'register'
+      }
+    }, function(err, res, body) {
+      t.notOk(err);
+      t.has(body, /user already exists/i);
+      t.equal(res.statusCode, 200);
+      t.end();
+    });
+  });
+});
