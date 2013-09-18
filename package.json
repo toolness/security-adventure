@@ -29,5 +29,9 @@
     "email": "varmaa@gmail.com",
     "url": "http://toolness.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/toolness/security-adventure.git"
+  },
   "license": "BSD-2-Clause"
 }
