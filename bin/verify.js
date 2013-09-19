@@ -32,7 +32,7 @@ var baseTests = fs.readdirSync(testDir)
   .filter(function(f) { return /\.js$/.test(f); })
   .map(function(f) { return path.join(testDir, f); });
 var problemTests = ((problem == 'all') ? Object.keys(PROBLEMS) : [problem])
-  .map(function(p) { return path.join(testDir, 'security', p + '.js'); });
+  .map(function(p) { return path.join(testDir, 'problems', p + '.js'); });
 var allTests = baseTests.concat(problemTests);
 var problemName = (problem == 'all'
                             ? 'all the problems'
