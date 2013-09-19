@@ -62,7 +62,8 @@ var routes = {
     };
 
     if (!VALID_USERNAME.test(username))
-      return res.redirect("/", 'Invalid username.');
+      return res.redirect("/", 'Invalid username ' +
+                               '(only A-Z, 0-9, and _ are allowed).');
     if (!password) return res.redirect("/", 'Please provide a password.');
 
     if (req.body.action == 'register') {

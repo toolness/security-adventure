@@ -76,7 +76,7 @@ test("POST /login w/ bad username rejects user", function(t) {
     }
   }, function(err, res, body) {
     t.notOk(err);
-    t.has(body, /invalid username\./i);
+    t.has(body, /invalid username \(only/i);
     t.equal(res.statusCode, 200);
     t.end();
   });
