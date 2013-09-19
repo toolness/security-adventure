@@ -98,7 +98,7 @@ var app = function(req, res) {
   req.loggedInUser = cookies.session;
   req.body = {};
 
-  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.statusCode = 200;
 
   var routeName = req.method + ' ' + req.urlInfo.pathname;
