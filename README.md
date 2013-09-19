@@ -59,8 +59,8 @@ This isn't exactly a best practice for various reasons, but most importantly,
 it contains a [Reflected Cross Site Scripting][reflected] vulnerability!
 
 Read about the vulnerability, and then try crafting a URL that, when visited,
-causes the user's browser to display an alert dialog that contains the
-user's session cookie (accessible through `document.cookie`).
+causes a logged-in user's browser to display an alert dialog that contains
+their session cookie (accessible through `document.cookie`).
 
 #### Stopping Cookie Theft
 
