@@ -13,8 +13,6 @@ var views = {
   401: function() { return 'You must <a href="/">log in</a> first.'; },
   404: function() { return "Alas, this is a 404."; },
   login: function(req) { return [
-    req.query.msg ? '<p style="background: yellow">' + req.query.msg + '</p>'
-                  : '',
     '<form method="post" action="/login">',
     '  username: <input type="text" name="username" required>',
     '  password: <input type="password" name="password" required>',
@@ -36,6 +34,8 @@ var views = {
 
 var routes = {
   'GET /': function showLoginFormOrUserNotes(req, res) {
+    if (req.query.msg)
+      res.write('<p style="background: yellow">' + req.query.msg + '</p>\n');
     if (!req.loggedInUser)
       return res.end(views.login(req));
     app.db.get('notes-' + req.loggedInUser, function(err, value) {
