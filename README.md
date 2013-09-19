@@ -1,44 +1,117 @@
 [![Build Status](https://travis-ci.org/toolness/security-adventure.png)](https://travis-ci.org/toolness/security-adventure)
 
-There is not much here yet.
+This repository contains an exciting quest to learn about Web security by
+learning about vulnerabilities, exploiting them, and then crafting code to
+protect against them.
+
+## Prerequisites
+
+First, make sure you have the skills taught in [learnyounode][] and
+[levelmeup][].
+
+Also, make sure [phantomjs][] is installed and on your path (as well as
+node and npm, of course).
+
+You may want to familiarize yourself with the [cookie][] module too.
+
+## Start The Adventure!
+
+Right now things are a bit messy, but you can start the adventure like so:
+
+```
+git clone https://github.com/toolness/security-adventure.git
+cd security-adventure
+npm install
+cp app-vulnerable.js app.js
+```
+
+`app.js` is a full web application in about 150 lines of code that
+allows users to create password-protected accounts and store private
+plaintext notes in the cloud.
+
+Run `node app.js` and then browse to http://localhost:3000 to familiarize
+yourself with the behavior of the application. Then read the source of
+`app.js` to get a basic idea of how everything works.
+
+`app.js` contains lots of vulnerabilities, and your quest is to learn about
+and fix all of them!
+
+### Vulnerability: Regular Expression Denial of Service
+
+The regular expression used to validate usernames has a 
+[Regular Expression Denial of Service][redos] vulnerability in it.
+
+Read about this vulnerability, and then try exploiting it manually by
+visiting the app in your browser and entering an invalid username that
+will cause the app to hang.
+
+Then fix `app.js`. When you're done, run `bin/verify.js redos` to verify
+that your solution works!
+
+### Vulnerability: Reflected Cross Site Scripting
+
+The home page of the app accepts a `msg` querystring argument containing
+a status message to display. This is used, for instance, when users fail
+to authenticate properly and the server needs to provide feedback.
+
+This isn't exactly a best practice for various reasons, but most importantly,
+it contains a [Reflected Cross Site Scripting][reflected] vulnerability!
+
+Read about the vulnerability, and then try crafting a URL that, when visited,
+causes the user's browser to display an alert dialog that says "Gotcha!".
+
+Then fix `app.js`. When you're done, run `bin/verify.js reflected-xss` to
+verify that your solution works.
+
+#### Bonus Challenge!
+
+Before fixing `app.js`, try crafting a URL that sends the user's
+session cookie (contained in `document.cookie`) to a remote server.
+
+Then fix `app.js` to issue [HttpOnly][] cookies; see the [cookie][] module
+documentation for information on how to do this. You can manually verify
+that your solution works by trying your exploit in your browser.
+
+### Hooray!
+
+You've completed all the challenges so far. You can verify that your `app.js`
+protects against all the problems you've solved, and still retains its
+basic functionality, by running `bin/verify.js all`.
+
+If you want to learn more about Web security, you should read Michal Zalewski's
+[The Tangled Web][tangled]. It is hilarious and very educational.
+
+## Goals and Future Plans
 
 In the future, this will be a [workshopper][] workshop like
 [stream-adventure][] that teaches people how to write secure code for the Web.
 
-Currently this project consists of one file, `app.js`, which is a full
-web application in about 150 lines of code that allows users to create
-password-protected accounts and store private plaintext notes in the cloud.
-The code was written to require only the skills learned in
-[learnyounode][] and [levelmeup][] to fully understand; leveldb
-and [cookie][] are the only dependencies outside of node core.
-
 `app.js` intentionally contains a number of [OWASP][]-defined security
-vulnerabilities, such as:
+vulnerabilities that aren't currently part of the quest, such as:
 
 * [Cross-Site Request Forgery][csrf] on all forms
-* [Reflected Cross Site Scripting][reflected] on alert messages
 * [Sensitive Data Exposure][sde] for password storage
-* [Regular Expression Denial of Service][redos] for username validation
 * [Insecure Direct Object References][idor] /
   [Broken Authentication and Session Management][brokenauth] for session keys
 
-The idea is for learners to first exploit these vulnerabilities, so they
+Learners should first exploit these vulnerabilities, so they
 understand how they work, and then to modify the code to implement
 defenses against them.
 
-When appropriate, workshop problems will be "standalone", i.e. they may
-involve writing brand-new code rather than changing something in `app.js`.
-
 Ideally, the tutorial will also teach users about more recent innovations in 
 browser security, such as [Content Security Policy][csp] and
-[HTTP Strict Transport Security][hsts].
+[HTTP Strict Transport Security][hsts]. It should also teach developers how to
+use security tools like the [Zed Attack Proxy][zap] to easily detect for
+vulnerabilities in their own applications.
 
 By the end of the tutorial, users will have familiarized themselves with a
 variety of types of attacks. The will also have familiarized themselves with
 the OWASP website and will be equipped to independently learn about security
-in the future. They will also be encouraged to read Michal Zalewski's
-[The Tangled Web][tangled] for further education.
+in the future.
 
+  [zap]: https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project
+  [HttpOnly]: https://www.owasp.org/index.php/HttpOnly
+  [phantomjs]: http://phantomjs.org/
   [workshopper]: https://github.com/rvagg/workshopper
   [stream-adventure]: https://github.com/substack/stream-adventure
   [learnyounode]: https://github.com/rvagg/learnyounode

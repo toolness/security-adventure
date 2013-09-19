@@ -22,7 +22,7 @@ if (process.argv[2] == 'GO') {
   });
 } else
   test("app is not vulnerable to regular expression DoS", function(t) {
-    var child = fork('./test-regexp-dos', ['GO']);
+    var child = fork('./redos', ['GO']);
     var timeout = setTimeout(function() {
       timeout = null;
       t.fail("timeout (" + TIMEOUT + "ms) exceeded");
