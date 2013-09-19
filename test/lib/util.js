@@ -14,3 +14,8 @@ exports.serve = function serve(app, cb) {
   });
   return server;
 };
+
+exports.getApp = function getApp() {
+  var APP_MODULE = '../../' + (process.env.APP_MODULE || 'app');
+  return require(APP_MODULE);
+};

@@ -1,7 +1,7 @@
 var request = require('request');
 
-var app = require('../../app');
 var util = require('./util');
+var app = util.getApp();
 
 module.exports = function appRequest(options, cb) {
   if (typeof(options) == 'string') options = {url: options};

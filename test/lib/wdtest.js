@@ -7,7 +7,7 @@ var phantomWdRunner = require('phantom-wd-runner');
 var FiberWebdriverObject = require('./fiber-webdriver');
 var FiberLevelObject = require('./fiber-level');
 var util = require('./util');
-var app = require('../../app');
+var app = util.getApp();
 
 var WEBDRIVER_URL = process.env.WEBDRIVER_URL;
 
