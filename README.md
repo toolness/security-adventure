@@ -86,8 +86,10 @@ mitigated, but it's way better to prevent the attack entirely!
 The [Content Security Policy][csp] specification is one of the most
 awesome security innovations to come to browsers in recent years. It
 allows servers to change the default allowances for what kinds of
-script can be executed, and even what kinds of external resources
-(such as iframes, images, and style sheets) can be included in a page.
+script can be executed, and even what kinds of embedded resources
+(such as iframes, images, and style sheets) can be included in a page. This
+is in accordance with the [Principle of Least Authority][pola], which
+is a good best practice for any secure system.
 
 Since our app doesn't actually have *any* client-side script or embedded
 content, we can enforce the most restrictive CSP possible by setting the
@@ -155,6 +157,7 @@ variety of types of attacks. The will also have familiarized themselves with
 the OWASP website and will be equipped to independently learn about security
 in the future.
 
+  [pola]: http://en.wikipedia.org/wiki/Principle_of_least_privilege
   [xss-cheat-sheet]: https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet
   [_.escape]: http://underscorejs.org/#escape
   [zap]: https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project
