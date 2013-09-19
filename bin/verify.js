@@ -41,7 +41,7 @@ var problemName = (problem == 'all'
 console.log("Now ensuring your app retains basic functionality while " +
             "solving " + problemName + "...\n");
 
-var child = spawn('tap-prettify', allTests);
+var child = spawn('tap-prettify', ['--stderr'].concat(allTests));
 
 child.stdout.pipe(process.stdout);
 child.stderr.pipe(process.stderr);
