@@ -58,19 +58,35 @@ This isn't exactly a best practice for various reasons, but most importantly,
 it contains a [Reflected Cross Site Scripting][reflected] vulnerability!
 
 Read about the vulnerability, and then try crafting a URL that, when visited,
-causes the user's browser to display an alert dialog that says "Gotcha!".
+causes the user's browser to display an alert dialog that contains the
+user's session cookie (accessible through `document.cookie`).
 
-Then fix `app.js`. When you're done, run `bin/verify.js reflected-xss` to
-verify that your solution works.
+#### Stopping Cookie Theft
 
-#### Bonus Challenge!
+Cookie theft is a particularly big danger because it allows attackers to
+do anything on a user's behalf, whenever they want. So first, mitigate
+the effects of XSS vulnerabilities by modifying `app.js` to issue
+[HttpOnly][] cookies. See the [cookie][] module documentation for
+information on how to do this.
 
-Before fixing `app.js`, try crafting a URL that sends the user's
-session cookie (contained in `document.cookie`) to a remote server.
+When you're done, run `bin/verify.js xss-cookie-theft` to verify that
+your solution works.
 
-Then fix `app.js` to issue [HttpOnly][] cookies; see the [cookie][] module
-documentation for information on how to do this. You can manually verify
-that your solution works by trying your exploit in your browser.
+#### Stopping XSS
+
+It's nice that the damage that can be done via the XSS attack is somewhat
+mitigated, but it's way better to prevent the attack entirely! This can be
+done by properly escaping the untrusted input coming in from the `msg`
+querystring argument.
+
+The [OWASP XSS Prevention Cheat Sheet][xss-cheat-sheet] is indispensable
+here. Check it out and use a reliable function like underscore's
+[_.escape][] to escape the `msg` argument before inserting it into your
+HTML. (Note that if you decide to use underscore, you'll want to install it
+first using `npm install underscore`.)
+
+When you're done, run `bin/verify.js reflected-xss` to verify that your
+solution works.
 
 ### Hooray!
 
@@ -109,6 +125,8 @@ variety of types of attacks. The will also have familiarized themselves with
 the OWASP website and will be equipped to independently learn about security
 in the future.
 
+  [xss-cheat-sheet]: https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet
+  [_.escape]: http://underscorejs.org/#escape
   [zap]: https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project
   [HttpOnly]: https://www.owasp.org/index.php/HttpOnly
   [phantomjs]: http://phantomjs.org/

@@ -6,7 +6,8 @@ var spawn = require('child_process').spawn;
 
 var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
-  'reflected-xss': 'Reflected Cross-Site Scripting'
+  'reflected-xss': 'Reflected Cross-Site Scripting',
+  'xss-cookie-theft': 'Cross-Site Scripting Cookie Theft'
 };
 
 var problem = process.argv[2];
