@@ -33,7 +33,7 @@ if (process.argv[2] == 'GO') {
     child.on('exit', function(code) {
       if (timeout === null) return;
       clearTimeout(timeout);
-      t.equal(code, 0);
+      t.equal(code, 0, "forked test should exit with code 0");
       t.end();
     });
   });
