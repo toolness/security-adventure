@@ -30,8 +30,9 @@ allows users to create password-protected accounts and store private
 plaintext notes in the cloud.
 
 Run `node app.js` and then browse to http://localhost:3000 to familiarize
-yourself with the behavior of the application. Then read the source of
-`app.js` to get a basic idea of how everything works.
+yourself with the behavior of the application by creating a user and saving
+some notes. Then read the source of `app.js` to get a basic idea of how
+everything works.
 
 `app.js` contains lots of vulnerabilities, and your quest is to learn about
 and fix all of them!
@@ -71,7 +72,8 @@ information on how to do this.
 
 Manually test your solution by loading your specially crafted URL from
 the previous section; you shouldn't see the session cookie in that
-alert dialog anymore.
+alert dialog anymore (you will have to log out and log back in for the
+HttpOnly cookie to be set properly).
 
 When you're done, run `bin/verify.js xss-cookie-theft` to verify that
 your solution works.
