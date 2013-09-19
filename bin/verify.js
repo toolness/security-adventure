@@ -38,7 +38,7 @@ var problemName = (problem == 'all'
                             ? 'all the problems'
                             : 'the ' + PROBLEMS[problem] + ' problem');
 
-console.log("Now ensuring your app retains basic functionality while " +
+console.log("Now ensuring your app retains existing functionality while " +
             "solving " + problemName + "...\n");
 
 var child = spawn('tap-prettify', ['--stderr'].concat(allTests));
@@ -48,9 +48,10 @@ child.stderr.pipe(process.stderr);
 child.on('exit', function(code) {
   if (code == 0) {
     console.log("Congratulations! Your app has solved " +
-                problemName + ".\n");
+                problemName + " while retaining existing functionality.\n");
   } else {
-    console.log("Alas, your app has not solved " + problemName + ".\n");
+    console.log("Alas, your app has not solved " + problemName + 
+                " while retaining existing functionality.\n");
   }
   process.exit(code);
 });
