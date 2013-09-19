@@ -7,7 +7,8 @@ var spawn = require('child_process').spawn;
 var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
   'reflected-xss': 'Reflected Cross-Site Scripting',
-  'xss-cookie-theft': 'Cross-Site Scripting Cookie Theft'
+  'xss-cookie-theft': 'Cross-Site Scripting Cookie Theft',
+  'csp': 'Content Security Policy'
 };
 
 var problem = process.argv[2];
@@ -34,11 +35,11 @@ var problemTests = ((problem == 'all') ? Object.keys(PROBLEMS) : [problem])
   .map(function(p) { return path.join(testDir, 'security', p + '.js'); });
 var allTests = baseTests.concat(problemTests);
 var problemName = (problem == 'all'
-                            ? 'all known exploits'
-                            : 'the ' + PROBLEMS[problem] + ' exploit');
+                            ? 'all the problems'
+                            : 'the ' + PROBLEMS[problem] + ' problem');
 
 console.log("Now ensuring your app retains basic functionality while " +
-            "protecting itself against " + problemName + "...\n");
+            "solving " + problemName + "...\n");
 
 var child = spawn('tap-prettify', allTests);
 
@@ -46,13 +47,10 @@ child.stdout.pipe(process.stdout);
 child.stderr.pipe(process.stderr);
 child.on('exit', function(code) {
   if (code == 0) {
-    console.log("Congratulations! Your app has protection against " +
+    console.log("Congratulations! Your app has solved " +
                 problemName + ".\n");
   } else {
-    console.log("Alas, your app is vulnerable to " +
-                (problem == 'all'
-                            ? 'one or more exploits'
-                            : problemName) + ".\n");
+    console.log("Alas, your app has not solved " + problemName + ".\n");
   }
   process.exit(code);
 });

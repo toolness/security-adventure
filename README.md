@@ -69,15 +69,43 @@ the effects of XSS vulnerabilities by modifying `app.js` to issue
 [HttpOnly][] cookies. See the [cookie][] module documentation for
 information on how to do this.
 
+Manually test your solution by loading your specially crafted URL from
+the previous section; you shouldn't see the session cookie in that
+alert dialog anymore.
+
 When you're done, run `bin/verify.js xss-cookie-theft` to verify that
 your solution works.
 
-#### Stopping XSS
+#### Defining a Content Security Policy
 
 It's nice that the damage that can be done via the XSS attack is somewhat
-mitigated, but it's way better to prevent the attack entirely! This can be
-done by properly escaping the untrusted input coming in from the `msg`
-querystring argument.
+mitigated, but it's way better to prevent the attack entirely!
+
+The [Content Security Policy][csp] specification is one of the most
+awesome security innovations to come to browsers in recent years. It
+allows servers to change the default allowances for what kinds of
+script can be executed, and even what kinds of external resources
+(such as iframes, images, and style sheets) can be included in a page.
+
+Since our app doesn't actually have *any* client-side script or embedded
+content, we can enforce the most restrictive CSP possible by setting the
+`Content-Security-Policy` header to `default-src 'none'`.
+
+Once you've done this, load your specially crafted URL again; you shouldn't
+even see an alert dialog, and your browser's debugging console might
+even explain why your JS wasn't executed.
+
+When you're done, run `bin/verify.js csp` to verify that your solution
+works.
+
+#### Stopping XSS
+
+CSP is only available on the most modern browsers, and we need to
+protect users on older ones too. Besides that, of course, we actually want
+to display the message content in a correct and useful way.
+
+This can be done by properly escaping the untrusted input coming in
+from the `msg` querystring argument.
 
 The [OWASP XSS Prevention Cheat Sheet][xss-cheat-sheet] is indispensable
 here. Check it out and use a reliable function like underscore's
@@ -115,10 +143,10 @@ understand how they work, and then to modify the code to implement
 defenses against them.
 
 Ideally, the tutorial will also teach users about more recent innovations in 
-browser security, such as [Content Security Policy][csp] and
-[HTTP Strict Transport Security][hsts]. It should also teach developers how to
-use security tools like the [Zed Attack Proxy][zap] to easily detect for
-vulnerabilities in their own applications.
+browser security, such as [HTTP Strict Transport Security][hsts]. It should
+also teach developers how to use security tools like the
+[Zed Attack Proxy][zap] to easily detect for vulnerabilities in their
+own applications.
 
 By the end of the tutorial, users will have familiarized themselves with a
 variety of types of attacks. The will also have familiarized themselves with
