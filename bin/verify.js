@@ -4,14 +4,15 @@ var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
 
+var TEST_PROBLEM_ONLY = 'TEST_PROBLEM_ONLY' in process.env;
+var TAP_PRETTIFY = path.normalize(path.join(__dirname, '..', 'node_modules',
+                                            '.bin', 'tap-prettify'));
 var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
   'reflected-xss': 'Reflected Cross-Site Scripting',
   'xss-cookie-theft': 'Cross-Site Scripting Cookie Theft',
   'csp': 'Content Security Policy'
 };
-
-var problem = process.argv[2];
 
 function help() {
   console.log("Usage: verify.js <problem>\n");
@@ -22,36 +23,44 @@ function help() {
   console.log("  all - Verify all of the above\n");
 }
 
-if (!(problem in PROBLEMS) && problem != 'all') {
-  help();
-  process.exit(1);
+function main() {
+  var problem = process.argv[2];
+
+  if (!(problem in PROBLEMS) && problem != 'all') {
+    help();
+    process.exit(1);
+  }
+
+  var testDir = path.normalize(path.join(__dirname, '..', 'test'));
+  var baseTests = fs.readdirSync(testDir)
+    .filter(function(f) { return /\.js$/.test(f); })
+    .map(function(f) { return path.join(testDir, f); });
+  var problemTests = ((problem == 'all') ? Object.keys(PROBLEMS) : [problem])
+    .map(function(p) { return path.join(testDir, 'problems', p + '.js'); });
+  var allTests = (TEST_PROBLEM_ONLY ? [] : baseTests).concat(problemTests);
+  var problemName = (problem == 'all'
+                              ? 'all the problems'
+                              : 'the ' + PROBLEMS[problem] + ' problem');
+
+  console.log("Now ensuring your app retains existing functionality while " +
+              "solving " + problemName + "...\n");
+
+  var child = spawn(TAP_PRETTIFY, ['--stderr'].concat(allTests));
+
+  child.stdout.pipe(process.stdout);
+  child.stderr.pipe(process.stderr);
+  child.on('exit', function(code) {
+    if (code == 0) {
+      console.log("Congratulations! Your app has solved " +
+                  problemName + " while retaining existing functionality.\n");
+    } else {
+      console.log("Alas, your app has not solved " + problemName + 
+                  " while retaining existing functionality.\n");
+    }
+    process.exit(code);
+  });
 }
 
-var testDir = path.normalize(path.join(__dirname, '..', 'test'));
-var baseTests = fs.readdirSync(testDir)
-  .filter(function(f) { return /\.js$/.test(f); })
-  .map(function(f) { return path.join(testDir, f); });
-var problemTests = ((problem == 'all') ? Object.keys(PROBLEMS) : [problem])
-  .map(function(p) { return path.join(testDir, 'problems', p + '.js'); });
-var allTests = baseTests.concat(problemTests);
-var problemName = (problem == 'all'
-                            ? 'all the problems'
-                            : 'the ' + PROBLEMS[problem] + ' problem');
+exports.PROBLEMS = PROBLEMS;
 
-console.log("Now ensuring your app retains existing functionality while " +
-            "solving " + problemName + "...\n");
-
-var child = spawn('tap-prettify', ['--stderr'].concat(allTests));
-
-child.stdout.pipe(process.stdout);
-child.stderr.pipe(process.stderr);
-child.on('exit', function(code) {
-  if (code == 0) {
-    console.log("Congratulations! Your app has solved " +
-                problemName + " while retaining existing functionality.\n");
-  } else {
-    console.log("Alas, your app has not solved " + problemName + 
-                " while retaining existing functionality.\n");
-  }
-  process.exit(code);
-});
+if (!module.parent) main();

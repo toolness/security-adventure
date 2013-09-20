@@ -1,0 +1,10 @@
+--- app-vulnerable.js	2013-09-19 13:18:56.000000000 +0200
++++ app.js	2013-09-20 09:42:16.000000000 +0200
+@@ -56,6 +56,7 @@
+     var password = req.body.password;
+     var createSession = function createSession() {
+       res.setHeader("Set-Cookie", cookie.serialize('session', username, {
++        httpOnly: true,
+         maxAge: 60 * 60 * 24
+       }));
+       return res.redirect("/");

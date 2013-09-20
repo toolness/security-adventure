@@ -1,0 +1,31 @@
+--- app-vulnerable.js	2013-09-19 13:18:56.000000000 +0200
++++ app.js	2013-09-20 09:33:55.000000000 +0200
+@@ -32,10 +32,27 @@
+   ].join('\n'); }
+ };
+ 
++// https://github.com/janl/mustache.js/blob/master/mustache.js
++
++var entityMap = {
++  "&": "&amp;",
++  "<": "&lt;",
++  ">": "&gt;",
++  '"': '&quot;',
++  "'": '&#39;',
++  "/": '&#x2F;'
++};
++
++function escapeHtml(string) {
++  return String(string).replace(/[&<>"'\/]/g, function (s) {
++    return entityMap[s];
++  });
++}
++
+ var routes = {
+   'GET /': function showLoginFormOrUserNotes(req, res) {
+     if (req.query.msg)
+-      res.write('<p style="background: yellow">' + req.query.msg + '</p>\n');
++      res.write('<p style="background: yellow">' + escapeHtml(req.query.msg) + '</p>\n');
+     if (!req.loggedInUser)
+       return res.end(views.login(req));
+     app.db.get('notes-' + req.loggedInUser, function(err, value) {

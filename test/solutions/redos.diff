@@ -1,0 +1,11 @@
+--- app-vulnerable.js	2013-09-19 13:18:56.000000000 +0200
++++ app.js	2013-09-19 16:17:38.000000000 +0200
+@@ -6,7 +6,7 @@
+ 
+ var PORT = process.env.PORT || 3000;
+ var FORM_TYPE = /^application\/x-www-form-urlencoded(;.*)?$/;
+-var VALID_USERNAME = /^([A-Za-z0-9_]+)+$/;
++var VALID_USERNAME = /^([A-Za-z0-9_]+)$/;
+ 
+ // These view functions all return strings of HTML.
+ var views = {

@@ -17,7 +17,7 @@
     "tap-prettify": "0.0.2"
   },
   "scripts": {
-    "test": "APP_MODULE=app-vulnerable node node_modules/.bin/tap-prettify test/*.js"
+    "test": "APP_MODULE=app-vulnerable node node_modules/.bin/tap-prettify test/*.js test/solutions/*.js"
   },
   "keywords": [
     "security",
