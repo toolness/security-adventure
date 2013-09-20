@@ -35,7 +35,7 @@ var views = {
 var routes = {
   'GET /': function showLoginFormOrUserNotes(req, res) {
     if (req.query.msg)
-      res.write('<p style="background: yellow">' + req.query.msg + '</p>\n');
+      res.write('<hr><em>' + req.query.msg + '</em><hr>\n');
     if (!req.loggedInUser)
       return res.end(views.login(req));
     app.db.get('notes-' + req.loggedInUser, function(err, value) {
@@ -48,7 +48,8 @@ var routes = {
     app.db.put('notes-' + req.loggedInUser, notes, function(err) {
       if (err) return next(err);
 
-      return res.redirect("/");
+      return res.redirect("/", "Your notes were saved at " + new Date() +
+                               ".");
     });
   },
   'POST /login': function authenticateAndLoginUser(req, res, next) {
