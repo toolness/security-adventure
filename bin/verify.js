@@ -37,7 +37,7 @@ function main() {
     .map(function(f) { return path.join(testDir, f); });
   var problemTests = ((problem == 'all') ? Object.keys(PROBLEMS) : [problem])
     .map(function(p) { return path.join(testDir, 'problems', p + '.js'); });
-  var allTests = (TEST_PROBLEM_ONLY ? [] : baseTests).concat(problemTests);
+  var allTests = problemTests.concat(TEST_PROBLEM_ONLY ? [] : baseTests);
   var problemName = (problem == 'all'
                               ? 'all the problems'
                               : 'the ' + PROBLEMS[problem] + ' problem');
