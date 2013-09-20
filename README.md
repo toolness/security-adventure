@@ -143,7 +143,7 @@ vulnerabilities that aren't currently part of the quest, such as:
   [Broken Authentication and Session Management][brokenauth] for session keys
 
 Learners should first exploit these vulnerabilities, so they
-understand how they work, and then to modify the code to implement
+understand how they work, and then modify the code to implement
 defenses against them.
 
 Ideally, the tutorial will also teach users about more recent innovations in 
