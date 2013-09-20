@@ -37,7 +37,8 @@ Object.keys(PROBLEMS).forEach(function(name) {
 
     fs.writeFileSync(APP_PATCHED, code);
 
-    var patch = spawn('patch', ['-s', '-f', APP_PATCHED, patchFile]);
+    var patch = spawn('patch', ['-s', '-f', '--no-backup-if-mismatch',
+                                APP_PATCHED, patchFile]);
     patch.stdout.on('data', process.stderr.write.bind(process.stderr));
     patch.stderr.on('data', process.stderr.write.bind(process.stderr));
     patch.on('exit', function(code) {
