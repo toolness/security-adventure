@@ -52,8 +52,8 @@ that your solution works!
 ### Vulnerability: Reflected Cross Site Scripting
 
 The home page of the app accepts a `msg` querystring argument containing
-a status message to display. This is used, for instance, when users fail
-to authenticate properly and the server needs to provide feedback.
+a hex-encoded status message to display. This is used, for instance, when
+users fail to authenticate properly and the server needs to provide feedback.
 
 This isn't exactly a best practice for various reasons, but most importantly,
 it contains a [Reflected Cross Site Scripting][reflected] vulnerability!

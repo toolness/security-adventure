@@ -24,8 +24,8 @@
  var routes = {
    'GET /': function showLoginFormOrUserNotes(req, res) {
      if (req.query.msg)
--      res.write('<hr><em>' + req.query.msg + '</em><hr>\n');
-+      res.write('<hr><em>' + escapeHtml(req.query.msg) + '</em><hr>\n');
+-      res.write('<hr><em>' + Buffer(req.query.msg, 'hex') + '</em><hr>\n');
++      res.write('<hr><em>' + escapeHtml(Buffer(req.query.msg, 'hex')) + '</em><hr>\n');
      if (!req.loggedInUser)
        return res.end(views.login(req));
      app.db.get('notes-' + req.loggedInUser, function(err, value) {

@@ -35,7 +35,7 @@ var views = {
 var routes = {
   'GET /': function showLoginFormOrUserNotes(req, res) {
     if (req.query.msg)
-      res.write('<hr><em>' + req.query.msg + '</em><hr>\n');
+      res.write('<hr><em>' + Buffer(req.query.msg, 'hex') + '</em><hr>\n');
     if (!req.loggedInUser)
       return res.end(views.login(req));
     app.db.get('notes-' + req.loggedInUser, function(err, value) {
@@ -118,7 +118,7 @@ var app = function(req, res) {
   if (!route) return next(404);
 
   res.redirect = function(where, msg) {
-    if (msg) where += "?msg=" + encodeURIComponent(msg);
+    if (msg) where += "?msg=" + Buffer(msg).toString('hex');
     res.setHeader("Location", where);
     res.statusCode = 303;
     res.end();
