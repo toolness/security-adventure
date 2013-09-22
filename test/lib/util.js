@@ -16,6 +16,9 @@ exports.serve = function serve(app, cb) {
 };
 
 exports.getApp = function getApp() {
-  var APP_MODULE = '../../' + (process.env.APP_MODULE || 'app');
+  var defaultModule = process.env.npm_lifecycle_event == "test"
+                      ? 'app-vulnerable'
+                      : 'app';
+  var APP_MODULE = '../../' + (process.env.APP_MODULE || defaultModule);
   return require(APP_MODULE);
 };
