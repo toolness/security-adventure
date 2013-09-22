@@ -134,8 +134,8 @@ If you want to learn more about Web security, you should read Michal Zalewski's
 In the future, this will be a [workshopper][] workshop like
 [stream-adventure][] that teaches people how to write secure code for the Web.
 
-`app.js` intentionally contains a number of [OWASP][]-defined security
-vulnerabilities that aren't currently part of the quest, such as:
+`app-vulnerable.js` intentionally contains a number of [OWASP][]-defined
+security vulnerabilities that aren't currently part of the quest, such as:
 
 * [Cross-Site Request Forgery][csrf] on all forms
 * [Sensitive Data Exposure][sde] for password storage
