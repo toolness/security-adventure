@@ -6,7 +6,8 @@ var spawn = require('child_process').spawn;
 
 var TEST_PROBLEM_ONLY = 'TEST_PROBLEM_ONLY' in process.env;
 var TAP_PRETTIFY = path.normalize(path.join(__dirname, '..', 'node_modules',
-                                            '.bin', 'tap-prettify'));
+                                            'tap-prettify', 'bin',
+                                            'tap-prettify.js'));
 var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
   'reflected-xss': 'Reflected Cross-Site Scripting',
@@ -45,7 +46,8 @@ function main() {
   console.log("Now ensuring your app retains existing functionality while " +
               "solving " + problemName + "...\n");
 
-  var child = spawn(TAP_PRETTIFY, ['--stderr'].concat(allTests));
+  var child = spawn(process.execPath,
+                    [TAP_PRETTIFY, '--stderr'].concat(allTests));
 
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
