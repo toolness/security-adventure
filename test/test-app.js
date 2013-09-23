@@ -12,6 +12,19 @@ test("GET / w/o session shows login form", function(t) {
   });
 });
 
+test("GET / w/ session shows notes, logout button", function(t) {
+  appRequest({
+    url: '/',
+    user: 'foo'
+  }, function(err, res, body) {
+    t.notOk(err);
+    t.has(body, /logout foo/i, "logout button is visible");
+    t.has(body, /update notes/i, "update notes button is visible");
+    t.has(res.statusCode, 200);
+    t.end();
+  });
+});
+
 test("GET /blarg returns 404", function(t) {
   appRequest('/blarg', function(err, res, body) {
     t.notOk(err);
