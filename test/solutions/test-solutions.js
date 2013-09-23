@@ -11,15 +11,20 @@ var ROOT_DIR = path.normalize(path.join(__dirname, '..', '..'));
 var APP_VULNERABLE = path.join(ROOT_DIR, 'app-vulnerable.js');
 var APP_PATCHED = path.join(ROOT_DIR, 'app-patched.js');
 
-var newEnv = JSON.parse(JSON.stringify(process.env));
-
-newEnv.TEST_PROBLEM_ONLY = '';
+function newEnv(extras) {
+  var newEnv = JSON.parse(JSON.stringify(process.env));
+  Object.keys(extras).forEach(function(name) {
+    newEnv[name] = extras[name];
+  });
+  return newEnv;
+}
 
 Object.keys(PROBLEMS).forEach(function(name) {
   test("problem " + name + " fails w/ app-vulnerable", function(t) {
-    newEnv.APP_MODULE = 'app-vulnerable';
-
-    var child = fork(VERIFY, [name], {env: newEnv});
+    var child = fork(VERIFY, [name], {env: newEnv({
+      APP_MODULE: 'app-vulnerable',
+      TEST_PROBLEM_ONLY: ''
+    })});
     child.on('exit', function(code) {
       t.ok(code != 0, "exit code should be nonzero");
       t.end();
@@ -44,9 +49,9 @@ Object.keys(PROBLEMS).forEach(function(name) {
     patch.on('exit', function(code) {
       t.equal(code, 0, "patch exits with code 0");
 
-      newEnv.APP_MODULE = 'app-patched';
-
-      var child = fork(VERIFY, [name], {env: newEnv});
+      var child = fork(VERIFY, [name], {env: newEnv({
+        APP_MODULE: 'app-patched'
+      })});
       child.on('exit', function(code) {
         t.equal(code, 0, "exit code should be zero");
         fs.unlinkSync(APP_PATCHED);
