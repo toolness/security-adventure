@@ -72,8 +72,8 @@ the previous section; you shouldn't see the session cookie in that
 alert dialog anymore (you will have to log out and log back in for the
 HttpOnly cookie to be set properly).
 
-When you're done, run `bin/verify.js xss-cookie-theft` to verify that
-your solution works.
+When you're done, run `bin/verify.js httponly` to verify that your solution
+works.
 
 #### Defining a Content Security Policy
 

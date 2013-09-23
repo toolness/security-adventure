@@ -11,7 +11,7 @@ var TAP_PRETTIFY = path.normalize(path.join(__dirname, '..', 'node_modules',
 var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
   'reflected-xss': 'Reflected Cross-Site Scripting',
-  'xss-cookie-theft': 'Cross-Site Scripting Cookie Theft',
+  'httponly': 'HttpOnly Cookie',
   'csp': 'Content Security Policy'
 };
 
