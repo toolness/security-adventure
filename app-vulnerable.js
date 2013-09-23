@@ -1,7 +1,6 @@
 var http = require('http');
 var url = require('url');
 var querystring = require('querystring');
-var cookie = require('cookie');
 var level = require('levelup');
 
 var PORT = process.env.PORT || 3000;
@@ -32,6 +31,19 @@ var views = {
   ].join('\n'); }
 };
 
+var sessionCookie = {
+  parse: function(cookie) {
+    try {
+      var match = cookie.match(/session=([A-Za-z0-9+\/]+)/);
+      return JSON.parse(Buffer(match[1], 'base64'));
+    } catch (e) {}
+  },
+  serialize: function(session) {
+    return 'session=' + Buffer(JSON.stringify(session)).toString('base64');
+  },
+  clear: 'session=; Expires=Thu, 01 Jan 1970 00:00:00 GMT'
+};
+
 var routes = {
   'GET /': function showLoginFormOrUserNotes(req, res) {
     if (req.query.msg)
@@ -56,9 +68,7 @@ var routes = {
     var username = req.body.username;
     var password = req.body.password;
     var createSession = function createSession() {
-      res.setHeader("Set-Cookie", cookie.serialize('session', JSON.stringify({
-        user: username
-      }), {maxAge: 60 * 60 * 24}));
+      res.setHeader("Set-Cookie", sessionCookie.serialize({user: username}));
       return res.redirect("/");
     };
 
@@ -85,21 +95,15 @@ var routes = {
     }
   },
   'POST /logout': function logoutUser(req, res) {
-    res.setHeader("Set-Cookie", cookie.serialize('session', '', {
-                    expires: new Date(0)
-                  }));
+    res.setHeader("Set-Cookie", sessionCookie.clear);
     return res.redirect("/");
   }
 };
 
 var app = function(req, res) {
-  var cookies = cookie.parse(req.headers['cookie'] || '');
-
   req.urlInfo = url.parse(req.url, true);
   req.query = req.urlInfo.query;
-  req.session = (function() { try {
-    return JSON.parse(cookies.session);
-  } catch (e) { return {}; } })();
+  req.session = sessionCookie.parse(req.headers['cookie']) || {};
   req.body = {};
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -141,6 +145,7 @@ var app = function(req, res) {
 };
 
 module.exports = app;
+module.exports.sessionCookie = sessionCookie;
 
 if (!module.parent) {
   var server = http.createServer(app);

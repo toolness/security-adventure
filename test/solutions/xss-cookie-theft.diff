@@ -1,11 +1,11 @@
---- app-vulnerable.js	2013-09-22 20:31:15.000000000 -0400
-+++ wtf.js	2013-09-22 20:39:03.000000000 -0400
-@@ -58,7 +58,7 @@
-     var createSession = function createSession() {
-       res.setHeader("Set-Cookie", cookie.serialize('session', JSON.stringify({
-         user: username
--      }), {maxAge: 60 * 60 * 24}));
-+      }), {httpOnly: true, maxAge: 60 * 60 * 24}));
-       return res.redirect("/");
-     };
- 
+--- app-vulnerable.js	Mon Sep 23 06:11:58 2013
++++ app.js	Mon Sep 23 06:14:55 2013
+@@ -39,7 +39,7 @@
+     } catch (e) {}
+   },
+   serialize: function(session) {
+-    return 'session=' + Buffer(JSON.stringify(session)).toString('base64');
++    return 'session=' + Buffer(JSON.stringify(session)).toString('base64') + '; HttpOnly';
+   },
+   clear: 'session=; Expires=Thu, 01 Jan 1970 00:00:00 GMT'
+ };

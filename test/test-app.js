@@ -1,6 +1,7 @@
 var test = require('tap-prettify').test;
 
-var appRequest = require('./lib').appRequest;
+var testUtil = require('./lib');
+var appRequest = testUtil.appRequest;
 
 test("GET / w/o session shows login form", function(t) {
   appRequest('/', function(err, res, body) {
@@ -111,4 +112,16 @@ test("POST /login w/ existing username rejects user", function(t) {
       t.end();
     });
   });
+});
+
+test("sessionCookie.parse() and .serialize() work", function(t) {
+  var sessionCookie = testUtil.getApp().sessionCookie;
+
+  t.deepEqual(sessionCookie.parse(sessionCookie.serialize({
+    foo: 'bar'
+  })), {foo: 'bar'});
+  t.equal(sessionCookie.parse("LOL"), undefined);
+  t.equal(sessionCookie.parse("session=LOL"), undefined);
+
+  t.end();
 });

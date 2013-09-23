@@ -4,7 +4,6 @@
   "description": "Go on an educational Web security adventure!",
   "main": "app.js",
   "dependencies": {
-    "cookie": "0.1.0",
     "levelup": "0.16.0",
     "leveldown": "0.8.2"
   },

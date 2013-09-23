@@ -12,8 +12,6 @@ First, make sure you have the skills taught in [learnyounode][] and
 Also, make sure [phantomjs][] is installed and on your path (as well as
 node and npm, of course).
 
-You may want to familiarize yourself with the [cookie][] module too.
-
 ## Start The Adventure!
 
 Right now things are a bit messy, but you can start the adventure like so:
@@ -66,9 +64,8 @@ their session cookie (accessible through `document.cookie`).
 
 Cookie theft is a particularly big danger because it allows attackers to
 do anything on a user's behalf, whenever they want. So first, mitigate
-the effects of XSS vulnerabilities by modifying `app.js` to issue
-[HttpOnly][] cookies. See the [cookie][] module documentation for
-information on how to do this.
+the effects of XSS vulnerabilities by modifying `sessionCookie.serialize()`
+in `app.js` to issue [HttpOnly][] cookies.
 
 Manually test your solution by loading your specially crafted URL from
 the previous section; you shouldn't see the session cookie in that
@@ -173,7 +170,6 @@ in the future.
   [sde]: https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure
   [idor]: https://www.owasp.org/index.php/Top_10_2013-A4-Insecure_Direct_Object_References
   [brokenauth]: https://www.owasp.org/index.php/Top_10_2013-A2-Broken_Authentication_and_Session_Management
-  [cookie]: https://github.com/shtylman/node-cookie
   [csp]: https://developer.mozilla.org/en-US/docs/Security/CSP/Introducing_Content_Security_Policy
   [hsts]: https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security
   [tangled]: http://lcamtuf.coredump.cx/tangled/
