@@ -4,7 +4,6 @@ var querystring = require('querystring');
 var level = require('levelup');
 
 var PORT = process.env.PORT || 3000;
-var FORM_TYPE = /^application\/x-www-form-urlencoded(;.*)?$/;
 var VALID_USERNAME = /^([A-Za-z0-9_]+)+$/;
 
 // These view functions all return strings of HTML.
@@ -67,7 +66,8 @@ var routes = {
     var username = req.body.username;
     var password = req.body.password;
     var createSession = function createSession() {
-      res.setHeader("Set-Cookie", sessionCookie.serialize({user: username}));
+      req.session.user = username;
+      res.setHeader("Set-Cookie", sessionCookie.serialize(req.session));
       return res.redirect("/");
     };
 
@@ -113,7 +113,7 @@ var app = function(req, res) {
   var next = function next(err) {
     if (typeof(err) == 'number') {
       res.statusCode = err;
-      return res.end(views[err](req));
+      return res.end(views[err] ? views[err](req) : err.toString());
     }
     console.error(err.stack || err);
     res.statusCode = 500;
@@ -129,7 +129,7 @@ var app = function(req, res) {
     res.end();
   };
 
-  if (req.method == 'POST' && FORM_TYPE.test(req.headers['content-type'])) {
+  if (req.method == 'POST') {
     var bodyChunks = [];
 
     req.on('data', bodyChunks.push.bind(bodyChunks));

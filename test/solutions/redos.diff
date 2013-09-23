@@ -3,7 +3,6 @@
 @@ -6,7 +6,7 @@
  
  var PORT = process.env.PORT || 3000;
- var FORM_TYPE = /^application\/x-www-form-urlencoded(;.*)?$/;
 -var VALID_USERNAME = /^([A-Za-z0-9_]+)+$/;
 +var VALID_USERNAME = /^([A-Za-z0-9_]+)$/;
  
