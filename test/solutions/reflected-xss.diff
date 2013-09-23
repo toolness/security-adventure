@@ -26,6 +26,6 @@
      if (req.query.msg)
 -      res.write('<hr><em>' + Buffer(req.query.msg, 'hex') + '</em><hr>\n');
 +      res.write('<hr><em>' + escapeHtml(Buffer(req.query.msg, 'hex')) + '</em><hr>\n');
-     if (!req.loggedInUser)
+     if (!req.session.user)
        return res.end(views.login(req));
-     app.db.get('notes-' + req.loggedInUser, function(err, value) {
+     app.db.get('notes-' + req.session.user, function(err, value) {

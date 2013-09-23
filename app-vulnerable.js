@@ -23,7 +23,7 @@ var views = {
   ].join('\n'); },
   notes: function(req, notes) { return [
     '<form method="post" action="/logout">',
-    '  <input type="submit" value="Logout ' + req.loggedInUser + '">',
+    '  <input type="submit" value="Logout ' + req.session.user + '">',
     '</form>',
     '<form method="post">',
     '  <textarea cols="80" rows="20" name="notes">' + notes + '</textarea>',
@@ -36,16 +36,16 @@ var routes = {
   'GET /': function showLoginFormOrUserNotes(req, res) {
     if (req.query.msg)
       res.write('<hr><em>' + Buffer(req.query.msg, 'hex') + '</em><hr>\n');
-    if (!req.loggedInUser)
+    if (!req.session.user)
       return res.end(views.login(req));
-    app.db.get('notes-' + req.loggedInUser, function(err, value) {
+    app.db.get('notes-' + req.session.user, function(err, value) {
       res.end(views.notes(req, err ? '' : value));
     });
   },
   'POST /': function updateUserNotes(req, res, next) {
-    if (!req.loggedInUser) return next(401);
+    if (!req.session.user) return next(401);
     var notes = req.body.notes || '';
-    app.db.put('notes-' + req.loggedInUser, notes, function(err) {
+    app.db.put('notes-' + req.session.user, notes, function(err) {
       if (err) return next(err);
 
       return res.redirect("/", "Your notes were saved at " + new Date() +
@@ -56,9 +56,9 @@ var routes = {
     var username = req.body.username;
     var password = req.body.password;
     var createSession = function createSession() {
-      res.setHeader("Set-Cookie", cookie.serialize('session', username, {
-        maxAge: 60 * 60 * 24
-      }));
+      res.setHeader("Set-Cookie", cookie.serialize('session', JSON.stringify({
+        user: username
+      }), {maxAge: 60 * 60 * 24}));
       return res.redirect("/");
     };
 
@@ -97,7 +97,9 @@ var app = function(req, res) {
 
   req.urlInfo = url.parse(req.url, true);
   req.query = req.urlInfo.query;
-  req.loggedInUser = cookies.session;
+  req.session = (function() { try {
+    return JSON.parse(cookies.session);
+  } catch (e) { return {}; } })();
   req.body = {};
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
