@@ -60,8 +60,7 @@ var routes = {
     app.db.put('notes-' + req.session.user, notes, function(err) {
       if (err) return next(err);
 
-      return res.redirect("/", "Your notes were saved at " + new Date() +
-                               ".");
+      return res.redirect("/", "Your notes were saved at " + Date() + ".");
     });
   },
   'POST /login': function authenticateAndLoginUser(req, res, next) {
