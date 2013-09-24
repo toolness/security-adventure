@@ -31,18 +31,16 @@ var views = {
 };
 
 var passwordStorage = {
-  has: function(db, user, cb) {
-    db.get('password-' + user, function(err) {
-      err ? (err.notFound ? cb(null, false) : cb(err)) : cb(null, true);
-    });
-  },
   check: function(db, user, pass, cb) {
     db.get('password-' + user, function(err, v) {
       err ? (err.notFound ? cb(null, false) : cb(err)) : cb(err, v == pass);
     });
   },
-  set: function(db, user, pass, cb) {
-    db.put('password-' + user, pass, cb);
+  create: function(db, user, pass, cb) {
+    db.get('password-' + user, function(err) {
+      if (!err) return cb(new Error('exists'));
+      err.notFound ? db.put('password-' + user, pass, cb) : cb(err);
+    });
   }
 };
 
@@ -93,12 +91,10 @@ var routes = {
     if (!password) return res.redirect("/", 'Please provide a password.');
 
     if (req.body.action == 'register')
-      passwordStorage.has(app.db, username, function(err, has) {
-        if (err) return next(err);
-        if (has) return res.redirect("/", 'That user already exists.');
-        passwordStorage.set(app.db, username, password, function(err) {
-          if (err) next(err); else createSession();
-        });
+      passwordStorage.create(app.db, username, password, function(err) {
+        if (!err) return createSession();
+        if (!/exists/.test(err)) return next(err);
+        res.redirect("/", 'That user already exists.');
       });
     else
       passwordStorage.check(app.db, username, password, function(err, ok) {

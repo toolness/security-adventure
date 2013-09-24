@@ -140,19 +140,14 @@ test("sessionCookie.parse() and .serialize() work", function(t) {
   t.end();
 });
 
-test("passwordStorage.has() works", function(t) {
+test("passwordStorage.create() fails when acct exists", function(t) {
   var db = testUtil.level();
 
-  passwordStorage.has(db, 'blah', function(err, has) {
-    t.notOk(err);
-    t.equal(has, false, ".has() returns false");
-    passwordStorage.set(db, 'blah', 'foo', function(err) {
-      t.notOk(err, ".set() works");
-      passwordStorage.has(db, 'blah', function(err, has) {
-        t.notOk(err);
-        t.equal(has, true, ".has() returns true");
-        t.end();
-      });
+  passwordStorage.create(db, 'blah', 'foo', function(err) {
+    t.notOk(err, "works when acct did not already exist");
+    passwordStorage.create(db, 'blah', 'foo', function(err) {
+      t.ok(/exists/.test(err), "reports err when acct already exists");
+      t.end();
     });
   });
 });
@@ -164,5 +159,31 @@ test("passwordStorage.check() works when pass doesn't exist", function(t) {
     t.notOk(err);
     t.equal(ok, false);
     t.end();
+  });
+});
+
+test("passwordStorage.check() returns true", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.create(db, 'blah', 'foo', function(err) {
+    t.notOk(err, "works when acct did not already exist");
+    passwordStorage.check(db, 'blah', 'foo', function(err, ok) {
+      t.notOk(err);
+      t.ok(ok, 'check returns true when password matches');
+      t.end();
+    });
+  });
+});
+
+test("passwordStorage.check() returns false", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.create(db, 'blah', 'foo', function(err) {
+    t.notOk(err, "works when acct did not already exist");
+    passwordStorage.check(db, 'blah', 'FOO', function(err, ok) {
+      t.notOk(err);
+      t.notOk(ok, 'check returns false when password doesn\'t match ');
+      t.end();
+    });
   });
 });
