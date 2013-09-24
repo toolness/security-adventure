@@ -2,6 +2,7 @@ var test = require('tap-prettify').test;
 
 var testUtil = require('./lib');
 var appRequest = testUtil.appRequest;
+var passwordStorage = testUtil.getApp().passwordStorage;
 
 test("GET / w/o session shows login form", function(t) {
   appRequest('/', function(err, res, body) {
@@ -137,4 +138,31 @@ test("sessionCookie.parse() and .serialize() work", function(t) {
   t.equal(sessionCookie.parse("session=LOL"), undefined);
 
   t.end();
+});
+
+test("passwordStorage.has() works", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.has(db, 'blah', function(err, has) {
+    t.notOk(err);
+    t.equal(has, false, ".has() returns false");
+    passwordStorage.set(db, 'blah', 'foo', function(err) {
+      t.notOk(err, ".set() works");
+      passwordStorage.has(db, 'blah', function(err, has) {
+        t.notOk(err);
+        t.equal(has, true, ".has() returns true");
+        t.end();
+      });
+    });
+  });
+});
+
+test("passwordStorage.check() works when pass doesn't exist", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.check(db, 'blah', 'meh', function(err, ok) {
+    t.notOk(err);
+    t.equal(ok, false);
+    t.end();
+  });
 });
