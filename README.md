@@ -142,8 +142,8 @@ anywhere. Then visit the file in your browser and see what happens.
 
 This is called a [Cross-Site Request Forgery][csrf] (CSRF) because it
 involves another site "forging" a request to your application and taking
-advantage of the ambient authority provided by cookies. Alas, your
-application has unwittingly become a [confused deputy][].
+advantage of the ambient authority provided by cookies. In security
+parlance, your application has unwittingly become a [confused deputy][].
 
 This exploit can be protected against by requiring that every incoming request 
 that changes your application's state (e.g. a POST request) also come with
