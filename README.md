@@ -27,6 +27,9 @@ sudo npm install -g security-adventure
 security-adventure
 ```
 
+That's all there is to it; the `security-adventure` program will
+instruct you further.
+
 ### Via git
 
 Alternatively, you can clone this git repository and follow the
