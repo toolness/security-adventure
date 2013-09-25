@@ -17,7 +17,7 @@
     "tap-prettify": "0.0.2"
   },
   "scripts": {
-    "test": "node node_modules/tap-prettify/bin/tap-prettify.js test/*.js test/solutions/*.js --stderr"
+    "test": "node node_modules/tap-prettify/bin/tap-prettify.js test/*.js test/solutions/*.js --stderr --timeout 60"
   },
   "keywords": [
     "security",
