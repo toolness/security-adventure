@@ -186,7 +186,6 @@ In the future, this will be a [workshopper][] workshop like
 `app-vulnerable.js` intentionally contains a number of [OWASP][]-defined
 security vulnerabilities that aren't currently part of the quest, such as:
 
-* [Cross-Site Request Forgery][csrf] on all forms
 * [Sensitive Data Exposure][sde] for password storage
 * [Insecure Direct Object References][idor] /
   [Broken Authentication and Session Management][brokenauth] for session keys
