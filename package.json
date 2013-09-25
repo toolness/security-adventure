@@ -3,11 +3,14 @@
   "version": "0.0.1",
   "description": "Go on an educational Web security adventure!",
   "main": "app.js",
-  "dependencies": {
-    "levelup": "0.16.0",
-    "leveldown": "0.8.2"
+  "bin": {
+    "security-adventure": "bin/security-adventure.js"
   },
-  "devDependencies": {
+  "dependencies": {
+    "xtend": "2.1.1",
+    "terminal-menu": "0.1.0",
+    "levelup": "0.16.0",
+    "leveldown": "0.8.2",
     "memdown": "0.3.0",
     "request": "2.27.0",
     "fibers": "1.0.1",

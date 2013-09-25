@@ -25,12 +25,10 @@ function help() {
   console.log("  all - Verify all of the above\n");
 }
 
-function main() {
-  var problem = process.argv[2];
-
+function verifyMain(problem, cb) {
   if (!(problem in PROBLEMS) && problem != 'all') {
     help();
-    process.exit(1);
+    return cb(1);
   }
 
   var testDir = path.normalize(path.join(__dirname, '..', 'test'));
@@ -60,10 +58,11 @@ function main() {
       console.log("Alas, your app has not solved " + problemName + 
                   " while retaining existing functionality.\n");
     }
-    process.exit(code);
+    cb(code);
   });
 }
 
-exports.PROBLEMS = PROBLEMS;
+module.exports = main;
+module.exports.PROBLEMS = PROBLEMS;
 
-if (!module.parent) main();
+if (!module.parent) verifyMain(process.argv[2], process.exit.bind(process));

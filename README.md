@@ -4,6 +4,8 @@ This repository contains an exciting quest to learn about Web security by
 learning about vulnerabilities, exploiting them, and then crafting code to
 protect against them.
 
+<!-- section: help -->
+
 ## Prerequisites
 
 First, make sure you have the skills taught in [learnyounode][] and
@@ -35,6 +37,8 @@ everything works.
 `app.js` contains lots of vulnerabilities, and your quest is to learn about
 and fix all of them!
 
+<!-- section: redos -->
+
 ### Vulnerability: Regular Expression Denial of Service
 
 The regular expression used to validate usernames has a 
@@ -46,6 +50,8 @@ will cause the app to hang.
 
 Then fix `app.js`. When you're done, run `bin/verify.js redos` to verify
 that your solution works!
+
+<!-- section: reflected-xss -->
 
 ### Vulnerability: Reflected Cross Site Scripting
 
@@ -59,6 +65,8 @@ it contains a [Reflected Cross Site Scripting][reflected] vulnerability!
 Read about the vulnerability, and then try crafting a URL that, when visited,
 causes a logged-in user's browser to display an alert dialog that contains
 their session cookie (accessible through `document.cookie`).
+
+<!-- section: httponly -->
 
 #### Stopping Cookie Theft
 
@@ -74,6 +82,8 @@ HttpOnly cookie to be set properly).
 
 When you're done, run `bin/verify.js httponly` to verify that your solution
 works.
+
+<!-- section: csp -->
 
 #### Defining a Content Security Policy
 
@@ -99,6 +109,8 @@ even explain why your JS wasn't executed.
 When you're done, run `bin/verify.js csp` to verify that your solution
 works.
 
+<!-- section: reflected-xss -->
+
 #### Stopping XSS
 
 CSP is only available on the most modern browsers, and we need to
@@ -116,6 +128,8 @@ first using `npm install underscore`.)
 
 When you're done, run `bin/verify.js reflected-xss` to verify that your
 solution works.
+
+<!-- section: csrf -->
 
 ### Vulnerability: Cross-Site Request Forgery
 
@@ -169,6 +183,8 @@ all existing functionality.
 
 When you're done, run `bin/verify.js csrf` to verify your solution.
 
+<!-- section: finished -->
+
 ### Hooray!
 
 You've completed all the challenges so far. You can verify that your `app.js`
@@ -177,6 +193,8 @@ basic functionality, by running `bin/verify.js all`.
 
 If you want to learn more about Web security, you should read Michal Zalewski's
 [The Tangled Web][tangled]. It is hilarious and very educational.
+
+<!-- section: epilogue -->
 
 ## Goals and Future Plans
 
