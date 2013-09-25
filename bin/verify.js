@@ -62,7 +62,7 @@ function verifyMain(problem, cb) {
   });
 }
 
-module.exports = main;
+module.exports = verifyMain;
 module.exports.PROBLEMS = PROBLEMS;
 
 if (!module.parent) verifyMain(process.argv[2], process.exit.bind(process));

@@ -13,6 +13,8 @@ readme.split('\n').forEach(function(line) {
     currentSection = match[1];
     sections[currentSection] = [];
   } else {
+    if (/Run `bin\/verify.js (.+)` to verify that your solution works/.test(line))
+      return;
     sections[currentSection].push(line);
   }
 });
