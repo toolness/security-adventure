@@ -2,6 +2,7 @@ var test = require('tap-prettify').test;
 
 var testUtil = require('./lib');
 var appRequest = testUtil.appRequest;
+var passwordStorage = testUtil.getApp().passwordStorage;
 
 test("GET / w/o session shows login form", function(t) {
   appRequest('/', function(err, res, body) {
@@ -137,4 +138,52 @@ test("sessionCookie.parse() and .serialize() work", function(t) {
   t.equal(sessionCookie.parse("session=LOL"), undefined);
 
   t.end();
+});
+
+test("passwordStorage.create() fails when acct exists", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.create(db, 'blah', 'foo', function(err) {
+    t.notOk(err, "works when acct did not already exist");
+    passwordStorage.create(db, 'blah', 'foo', function(err) {
+      t.ok(/exists/.test(err), "reports err when acct already exists");
+      t.end();
+    });
+  });
+});
+
+test("passwordStorage.check() works when pass doesn't exist", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.check(db, 'blah', 'meh', function(err, ok) {
+    t.notOk(err);
+    t.equal(ok, false);
+    t.end();
+  });
+});
+
+test("passwordStorage.check() returns true", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.create(db, 'blah', 'foo', function(err) {
+    t.notOk(err, "works when acct did not already exist");
+    passwordStorage.check(db, 'blah', 'foo', function(err, ok) {
+      t.notOk(err);
+      t.ok(ok, 'check returns true when password matches');
+      t.end();
+    });
+  });
+});
+
+test("passwordStorage.check() returns false", function(t) {
+  var db = testUtil.level();
+
+  passwordStorage.create(db, 'blah', 'foo', function(err) {
+    t.notOk(err, "works when acct did not already exist");
+    passwordStorage.check(db, 'blah', 'FOO', function(err, ok) {
+      t.notOk(err);
+      t.notOk(ok, 'check returns false when password doesn\'t match ');
+      t.end();
+    });
+  });
 });

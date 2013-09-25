@@ -13,10 +13,11 @@
     "fibers": "1.0.1",
     "phantom-wd-runner": "0.0.2",
     "wd": "0.1.4",
+    "cheerio": "0.12.2",
     "tap-prettify": "0.0.2"
   },
   "scripts": {
-    "test": "node node_modules/tap-prettify/bin/tap-prettify.js test/*.js test/solutions/*.js"
+    "test": "node node_modules/tap-prettify/bin/tap-prettify.js test/*.js test/solutions/*.js --stderr --timeout 60"
   },
   "keywords": [
     "security",

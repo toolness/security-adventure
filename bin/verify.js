@@ -12,7 +12,8 @@ var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
   'reflected-xss': 'Reflected Cross-Site Scripting',
   'httponly': 'HttpOnly Cookie',
-  'csp': 'Content Security Policy'
+  'csp': 'Content Security Policy',
+  'csrf': 'Cross-Site Request Forgery'
 };
 
 function help() {

@@ -117,6 +117,58 @@ first using `npm install underscore`.)
 When you're done, run `bin/verify.js reflected-xss` to verify that your
 solution works.
 
+### Vulnerability: Cross-Site Request Forgery
+
+Cookies are a form of [ambient authority][], which means that they get
+sent with *every* request to a website--even when that request comes from
+a different website!
+
+Consider a website called killyournotes.com which contains the following
+form:
+
+```html
+<body onload="document.forms[0].submit()">
+  <form method="POST" action="http://localhost:3000/">
+    <input type="hidden" name="notes" value="gotcha.">
+  </form>
+</body>
+```
+
+Every user logged in to your application would immediately have their notes
+deleted whenever they visited killyournotes.com!
+
+Try doing this now: copy the above text and paste it into an HTML file
+anywhere. Then visit the file in your browser and see what happens.
+
+This is called a [Cross-Site Request Forgery][csrf] (CSRF) because it
+involves another site "forging" a request to your application and taking
+advantage of the ambient authority provided by cookies. In security
+parlance, your application has unwittingly become a [confused deputy][].
+
+This exploit can be protected against by requiring that every incoming request 
+that changes your application's state (e.g. a POST request) also come with
+an explicit token guaranteeing that the request indeed came from a page
+on your site, and not someone else's.
+
+To complete this mission, you'll need to do a number of things:
+
+* When a GET request arrives at your application, check to see if the
+  session has a value called `csrfToken`. If it doesn't, create one using
+  [crypto.randomBytes()][] and set the session cookie.
+
+* Whenever your site displays a form, add a hidden input with the name
+  `csrfToken` to the form, and set its value to that of `session.csrfToken`.
+
+* Whenever your site processes a POST request, ensure that the incoming form
+  data has a value for `csrfToken` that matches that of `session.csrfToken`.
+  If it doesn't, return a 403 (forbidden) reponse code.
+
+Once you've done this, your exploit should result in a 403 instead of
+deleting the current user's notes, and your application should still retain
+all existing functionality.
+
+When you're done, run `bin/verify.js csrf` to verify your solution.
+
 ### Hooray!
 
 You've completed all the challenges so far. You can verify that your `app.js`
@@ -134,7 +186,6 @@ In the future, this will be a [workshopper][] workshop like
 `app-vulnerable.js` intentionally contains a number of [OWASP][]-defined
 security vulnerabilities that aren't currently part of the quest, such as:
 
-* [Cross-Site Request Forgery][csrf] on all forms
 * [Sensitive Data Exposure][sde] for password storage
 * [Insecure Direct Object References][idor] /
   [Broken Authentication and Session Management][brokenauth] for session keys
@@ -154,6 +205,9 @@ variety of types of attacks. The will also have familiarized themselves with
 the OWASP website and will be equipped to independently learn about security
 in the future.
 
+  [confused deputy]: http://en.wikipedia.org/wiki/Confused_deputy_problem
+  [crypto.randomBytes()]: http://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback
+  [ambient authority]: http://en.wikipedia.org/wiki/Ambient_authority
   [pola]: http://en.wikipedia.org/wiki/Principle_of_least_privilege
   [xss-cheat-sheet]: https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet
   [_.escape]: http://underscorejs.org/#escape

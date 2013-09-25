@@ -30,6 +30,20 @@ var views = {
   ].join('\n'); }
 };
 
+var passwordStorage = {
+  check: function(db, user, pass, cb) {
+    db.get('password-' + user, function(err, v) {
+      err ? (err.notFound ? cb(null, false) : cb(err)) : cb(err, v == pass);
+    });
+  },
+  create: function(db, user, pass, cb) {
+    db.get('password-' + user, function(err) {
+      if (!err) return cb(new Error('exists'));
+      err.notFound ? db.put('password-' + user, pass, cb) : cb(err);
+    });
+  }
+};
+
 var sessionCookie = {
   parse: function(cookie) {
     try {
@@ -76,22 +90,17 @@ var routes = {
                                '(only A-Z, 0-9, and _ are allowed).');
     if (!password) return res.redirect("/", 'Please provide a password.');
 
-    if (req.body.action == 'register') {
-      return app.db.get('password-' + username, function(err, value) {
-        if (!err)
-          return res.redirect("/", 'That user already exists.');
-        app.db.put('password-' + username, password, function(err) {
-          if (err) return next(err);
-          return createSession();
-        });
+    if (req.body.action == 'register')
+      passwordStorage.create(app.db, username, password, function(err) {
+        if (!err) return createSession();
+        if (!/exists/.test(err)) return next(err);
+        res.redirect("/", 'That user already exists.');
       });
-    } else {
-      app.db.get('password-' + username, function(err, value) {
-        if (!err && value == password)
-          return createSession();
+    else
+      passwordStorage.check(app.db, username, password, function(err, ok) {
+        if (err) return next(err); else if (ok) return createSession();
         res.redirect("/", 'Invalid username or password.');
       });
-    }
   },
   'POST /logout': function logoutUser(req, res) {
     res.setHeader("Set-Cookie", sessionCookie.clear);
@@ -138,13 +147,12 @@ var app = function(req, res) {
       req.body = querystring.parse(data);
       route(req, res, next);
     });
-  } else {
-    route(req, res, next);
-  }
+  } else route(req, res, next);
 };
 
 module.exports = app;
 module.exports.sessionCookie = sessionCookie;
+module.exports.passwordStorage = passwordStorage;
 
 if (!module.parent) {
   var server = http.createServer(app);
