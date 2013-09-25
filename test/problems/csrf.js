@@ -5,11 +5,15 @@ var testUtil = require('../lib');
 var sessionCookie = testUtil.getApp().sessionCookie;
 var appRequest = testUtil.appRequest;
 
+// TODO: Ensure that the solution uses crypto.getRandomBytes().
+
 test("GET / sets CSRF token in session cookie, login form", function(t) {
   appRequest('/', function(err, res, body) {
     t.notOk(err);
     var setCookieHeaders = res.headers['set-cookie'];
-    t.equal((setCookieHeaders || []).length, 1,
+    t.ok(setCookieHeaders, "set-cookie header must be present");
+    if (!setCookieHeaders) return t.end();
+    t.equal(setCookieHeaders.length, 1,
             'one set-cookie header is provided');
     var session = sessionCookie.parse(setCookieHeaders[0]);
     t.ok(session, "session cookie exists");
@@ -28,7 +32,8 @@ function test403(path) {
   test("POST " + path + " without csrfToken returns 403", function(t) {
     appRequest({
       method: 'POST',
-      url: '/'
+      url: '/',
+      ignoreCsrfToken: true
     }, function(err, res, body) {
       t.notOk(err);
       t.equal(res.statusCode, 403);
