@@ -35,7 +35,8 @@ Workshopper({
                 this.name + ' again.\n');
     process.exit(1);
   },
-  runVerifier: function(name, successCb) {
+  runVerifier: function(name, filename, successCb) {
+    process.env.APP_MODULE = filename;
     verify(problemIdFromName(name), function(exitCode) {
       if (!exitCode) return successCb();
       process.exit(exitCode);

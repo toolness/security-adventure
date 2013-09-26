@@ -84,13 +84,14 @@ Workshopper.prototype.init = function () {
 
 Workshopper.prototype.verify = function (run) {
   var current = this.getData('current')
+  var filename = path.resolve(process.cwd(), argv._[1]);
 
   if (!current) {
     console.error('ERROR: No active problem. Select a challenge from the menu.')
     return process.exit(1)
   }
   
-  this.runVerifier(current, function onSuccess() {
+  this.runVerifier(current, filename, function onSuccess() {
     this.updateData('completed', function (xs) {
       if (!xs) xs = []
       var ix = xs.indexOf(current)
