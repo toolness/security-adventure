@@ -6,15 +6,34 @@ protect against them.
 
 ## Prerequisites
 
-First, make sure you have the skills taught in [learnyounode][] and
-[levelmeup][].
+<!-- section: help -->
+
+Before embarking on this adventure, make sure you have the skills taught in
+[learnyounode][] and [levelmeup][].
 
 Also, make sure [phantomjs][] is installed and on your path (as well as
-node and npm, of course).
+node 0.10 and npm).
+
+<!-- section: start -->
 
 ## Start The Adventure!
 
-Right now things are a bit messy, but you can start the adventure like so:
+### Via npm
+
+Start the adventure like so:
+
+```
+sudo npm install -g security-adventure
+security-adventure
+```
+
+That's all there is to it; the `security-adventure` program will
+instruct you further.
+
+### Via git
+
+Alternatively, you can clone this git repository and follow the
+instructions in the rest of this README:
 
 ```
 git clone https://github.com/toolness/security-adventure.git
@@ -22,6 +41,8 @@ cd security-adventure
 npm install
 cp app-vulnerable.js app.js
 ```
+
+<!-- section: app -->
 
 `app.js` is a full web application in about 150 lines of code that
 allows users to create password-protected accounts and store private
@@ -35,6 +56,8 @@ everything works.
 `app.js` contains lots of vulnerabilities, and your quest is to learn about
 and fix all of them!
 
+<!-- section: redos -->
+
 ### Vulnerability: Regular Expression Denial of Service
 
 The regular expression used to validate usernames has a 
@@ -44,8 +67,11 @@ Read about this vulnerability, and then try exploiting it manually by
 visiting the app in your browser and entering an invalid username that
 will cause the app to hang.
 
-Then fix `app.js`. When you're done, run `bin/verify.js redos` to verify
-that your solution works!
+Then fix `app.js`. 
+
+Run `bin/verify.js redos` to verify that your solution works.
+
+<!-- section: httponly -->
 
 ### Vulnerability: Reflected Cross Site Scripting
 
@@ -72,8 +98,9 @@ the previous section; you shouldn't see the session cookie in that
 alert dialog anymore (you will have to log out and log back in for the
 HttpOnly cookie to be set properly).
 
-When you're done, run `bin/verify.js httponly` to verify that your solution
-works.
+Run `bin/verify.js httponly` to verify that your solution works.
+
+<!-- section: csp -->
 
 #### Defining a Content Security Policy
 
@@ -96,10 +123,11 @@ Once you've done this, load your specially crafted URL again; you shouldn't
 even see an alert dialog, and your browser's debugging console might
 even explain why your JS wasn't executed.
 
-When you're done, run `bin/verify.js csp` to verify that your solution
-works.
+Run `bin/verify.js csp` to verify that your solution works.
 
-#### Stopping XSS
+<!-- section: html-escaping -->
+
+#### Stopping XSS with HTML Escaping
 
 CSP is only available on the most modern browsers, and we need to
 protect users on older ones too. Besides that, of course, we actually want
@@ -114,8 +142,9 @@ here. Check it out and use a reliable function like underscore's
 HTML. (Note that if you decide to use underscore, you'll want to install it
 first using `npm install underscore`.)
 
-When you're done, run `bin/verify.js reflected-xss` to verify that your
-solution works.
+Run `bin/verify.js html-escaping` to verify that your solution works.
+
+<!-- section: csrf -->
 
 ### Vulnerability: Cross-Site Request Forgery
 
@@ -167,7 +196,9 @@ Once you've done this, your exploit should result in a 403 instead of
 deleting the current user's notes, and your application should still retain
 all existing functionality.
 
-When you're done, run `bin/verify.js csrf` to verify your solution.
+Run `bin/verify.js csrf` to verify that your solution works.
+
+<!-- section: epilogue -->
 
 ### Hooray!
 
@@ -179,9 +210,6 @@ If you want to learn more about Web security, you should read Michal Zalewski's
 [The Tangled Web][tangled]. It is hilarious and very educational.
 
 ## Goals and Future Plans
-
-In the future, this will be a [workshopper][] workshop like
-[stream-adventure][] that teaches people how to write secure code for the Web.
 
 `app-vulnerable.js` intentionally contains a number of [OWASP][]-defined
 security vulnerabilities that aren't currently part of the quest, such as:
@@ -215,7 +243,6 @@ in the future.
   [HttpOnly]: https://www.owasp.org/index.php/HttpOnly
   [phantomjs]: http://phantomjs.org/
   [workshopper]: https://github.com/rvagg/workshopper
-  [stream-adventure]: https://github.com/substack/stream-adventure
   [learnyounode]: https://github.com/rvagg/learnyounode
   [levelmeup]: https://github.com/rvagg/levelmeup
   [OWASP]: https://www.owasp.org/
