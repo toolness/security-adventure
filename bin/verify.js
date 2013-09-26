@@ -3,13 +3,14 @@
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
+var bold = require('../term-util').bold;
 
 var TEST_PROBLEM_ONLY = 'TEST_PROBLEM_ONLY' in process.env;
 var TAP_PRETTIFY = path.normalize(path.join(__dirname, '..', 'node_modules',
                                             'tap-prettify', 'bin',
                                             'tap-prettify.js'));
 var PROBLEMS = {
-  'redos': 'Regular Expression Denial of Service',
+  'redos': 'RegExp Denial of Service',
   'httponly': 'HttpOnly Cookie',
   'csp': 'Content Security Policy',
   'html-escaping': 'HTML Escaping',
@@ -39,11 +40,11 @@ function verifyMain(problem, cb) {
     .map(function(p) { return path.join(testDir, 'problems', p + '.js'); });
   var allTests = problemTests.concat(TEST_PROBLEM_ONLY ? [] : baseTests);
   var problemName = (problem == 'all'
-                              ? 'all the problems'
-                              : 'the ' + PROBLEMS[problem] + ' problem');
+                              ? bold('all the problems')
+                              : 'the ' + bold(PROBLEMS[problem]) + ' problem');
 
   console.log("Now ensuring your app retains existing functionality while " +
-              "solving " + problemName + "...\n");
+              "solving\n" + problemName + "...\n");
 
   var child = spawn(process.execPath,
                     [TAP_PRETTIFY, '--stderr'].concat(allTests));
@@ -51,12 +52,14 @@ function verifyMain(problem, cb) {
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
   child.on('exit', function(code) {
+    console.log();
     if (code == 0) {
       console.log("Congratulations! Your app has solved " +
-                  problemName + " while retaining existing functionality.\n");
+                  problemName + " while\n" +
+                  "retaining existing functionality.\n");
     } else {
       console.log("Alas, your app has not solved " + problemName + 
-                  " while retaining existing functionality.\n");
+                  " while\nretaining existing functionality.\n");
     }
     cb(code);
   });
