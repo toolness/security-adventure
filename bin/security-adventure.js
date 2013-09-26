@@ -30,6 +30,7 @@ Workshopper({
                                            'app-vulnerable.js'));
     console.log("Please run the following command:\n");
     console.log("  " + copyCmd + " " + appVuln + " app.js");
+    console.log("  npm install levelup leveldown");
     console.log(readmeSections.app);
     console.log('When you are ready to begin the adventure, run ' +
                 this.name + ' again.\n');
