@@ -10,9 +10,9 @@ var TAP_PRETTIFY = path.normalize(path.join(__dirname, '..', 'node_modules',
                                             'tap-prettify.js'));
 var PROBLEMS = {
   'redos': 'Regular Expression Denial of Service',
-  'reflected-xss': 'Reflected Cross-Site Scripting',
   'httponly': 'HttpOnly Cookie',
   'csp': 'Content Security Policy',
+  'html-escaping': 'HTML Escaping',
   'csrf': 'Cross-Site Request Forgery'
 };
 

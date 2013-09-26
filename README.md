@@ -125,9 +125,9 @@ even explain why your JS wasn't executed.
 
 Run `bin/verify.js csp` to verify that your solution works.
 
-<!-- section: reflected-xss -->
+<!-- section: html-escaping -->
 
-#### Stopping XSS
+#### Stopping XSS with HTML Escaping
 
 CSP is only available on the most modern browsers, and we need to
 protect users on older ones too. Besides that, of course, we actually want
@@ -142,7 +142,7 @@ here. Check it out and use a reliable function like underscore's
 HTML. (Note that if you decide to use underscore, you'll want to install it
 first using `npm install underscore`.)
 
-Run `bin/verify.js reflected-xss` to verify that your solution works.
+Run `bin/verify.js html-escaping` to verify that your solution works.
 
 <!-- section: csrf -->
 
