@@ -22,7 +22,7 @@ function newEnv(extras) {
 Object.keys(PROBLEMS).forEach(function(name) {
   test("problem " + name + " fails w/ app-vulnerable", function(t) {
     var child = fork(VERIFY, [name], {env: newEnv({
-      APP_MODULE: 'app-vulnerable',
+      APP_MODULE: APP_VULNERABLE,
       TEST_PROBLEM_ONLY: ''
     })});
     child.on('exit', function(code) {
@@ -50,7 +50,7 @@ Object.keys(PROBLEMS).forEach(function(name) {
       t.equal(code, 0, "patch exits with code 0");
 
       var child = fork(VERIFY, [name], {env: newEnv({
-        APP_MODULE: 'app-patched'
+        APP_MODULE: APP_PATCHED
       })});
       child.on('exit', function(code) {
         t.equal(code, 0, "exit code should be zero");

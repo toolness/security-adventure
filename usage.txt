@@ -1,0 +1,12 @@
+{bold}{yellow}Usage{/yellow}{/bold}
+
+  {bold}{green}{appname}{/green}{/bold}
+    Show a menu to interactively select a problem.
+  {bold}{green}{appname}{/green} list{/bold}
+    Show a newline-separated list of all the problems.
+  {bold}{green}{appname}{/green} select NAME{/bold}
+    Select a problem.
+  {bold}{green}{appname}{/green} current{/bold}
+    Show the currently selected problem.
+  {bold}{green}{appname}{/green} verify program.js{/bold}
+    Verify your program solves the current problem.
