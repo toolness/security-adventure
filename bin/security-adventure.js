@@ -3,8 +3,8 @@
 var fs = require('fs');
 var path = require('path');
 var verify = require('./verify');
-var Workshopper = require('../workshopper');
-var readmeSections = require('../readme-sections');
+var Workshopper = require('../lib/workshopper');
+var readmeSections = require('../lib/readme-sections');
 
 var PROBLEMS = verify.PROBLEMS;
 

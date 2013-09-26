@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
-var bold = require('../term-util').bold;
+var bold = require('../lib/term-util').bold;
 
 var TEST_PROBLEM_ONLY = 'TEST_PROBLEM_ONLY' in process.env;
 var TAP_PRETTIFY = path.normalize(path.join(__dirname, '..', 'node_modules',
