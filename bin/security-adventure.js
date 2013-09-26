@@ -28,7 +28,7 @@ Workshopper({
     var copyCmd = process.platform == 'win32' ? 'copy' : 'cp';
     var appVuln = path.normalize(path.join(__dirname, '..',
                                            'app-vulnerable.js'));
-    console.log("Please run the following command:\n");
+    console.log("Please run the following:\n");
     console.log("  " + copyCmd + " " + appVuln + " app.js");
     console.log("  npm install levelup leveldown");
     console.log(readmeSections.app);
