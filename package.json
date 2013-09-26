@@ -1,6 +1,6 @@
 {
   "name": "security-adventure",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Go on an educational Web security adventure!",
   "main": "app.js",
   "bin": {
