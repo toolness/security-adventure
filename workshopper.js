@@ -39,7 +39,8 @@ function Workshopper (options) {
   this.problems    = options.problems
   this.showProblem = options.showProblem
   this.showHelp    = options.showHelp
-  this.preRun      = options.preRun
+  this.preMenu     = options.preMenu
+  this.runVerifier = options.runVerifier
   this.appDir      = options.appDir
   this.dataDir     = path.join(
       process.env.HOME || process.env.USERPROFILE
@@ -73,41 +74,45 @@ Workshopper.prototype.init = function () {
     )
   }
 
-  var run = argv._[0] == 'run'
-  if (argv._[0] == 'verify' || run)
-    return this.verify(run)
+  if (argv._[0] == 'verify')
+    return this.verify()
 
-  if (this.preRun) return this.preRun(this.printMenu.bind(this));
+  if (this.preMenu) return this.preMenu(this.printMenu.bind(this));
 
   this.printMenu()
 }
 
 Workshopper.prototype.verify = function (run) {
   var current = this.getData('current')
-    , setupFn
-    , dir
-    , setup
 
   if (!current) {
     console.error('ERROR: No active problem. Select a challenge from the menu.')
     return process.exit(1)
   }
   
-  dir     = this.dirFromName(current)
-  setupFn = require(dir + '/setup.js')
-
-  if (!setupFn.async) {
-    setup = setupFn(run)
-    return setTimeout(this.runSolution.bind(this, setup, dir, current, run), setup.wait || 1)
-  }
-
-  setupFn(run, function (err, setup) {
-    if (err) {
-      console.error('An error occurred during setup:', err)
-      return console.error(err.stack)
+  this.runVerifier(current, function onSuccess() {
+    this.updateData('completed', function (xs) {
+      if (!xs) xs = []
+      var ix = xs.indexOf(current)
+      return ix >= 0 ? xs : xs.concat(current)
+    })
+        
+    completed = this.getData('completed') || []
+    
+    remaining = this.problems().length - completed.length
+    if (remaining === 0) {
+      console.log('You\'ve finished all the challenges! Hooray!\n')
+    } else {
+      console.log(
+          'You have '
+        + remaining
+        + ' challenge'
+        + (remaining != 1 ? 's' : '')
+        + ' left.'
+      )
+      console.log('Type `' + this.name + '` to show the menu.\n')
     }
-    setTimeout(this.runSolution.bind(this, setup, dir, current, run), setup.wait || 1)
-  }.bind(this))
+  }.bind(this));
 }
 
 Workshopper.prototype.printMenu = function () {
@@ -149,18 +154,6 @@ Workshopper.prototype.updateData = function (name, fn) {
 
   file = path.resolve(this.dataDir, name + '.json')
   fs.writeFileSync(file, JSON.stringify(fn(json)))
-}
-
-Workshopper.prototype.runSolution = function (setup, dir, current, run) {
-  BLAH;
-}
-
-function solutionCmd (dir, setup) {
-  BLAH;
-}
-
-function submissionCmd (setup) {
-  BLAH;
 }
 
 Workshopper.prototype._printHelp = function () {

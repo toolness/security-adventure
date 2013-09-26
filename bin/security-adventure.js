@@ -2,13 +2,16 @@
 
 var fs = require('fs');
 var path = require('path');
-var PROBLEMS = require('./verify').PROBLEMS;
+var verify = require('./verify');
 var Workshopper = require('../workshopper');
 var readmeSections = require('../readme-sections');
+
+var PROBLEMS = verify.PROBLEMS;
 
 function problemIdFromName(name) {
   for (var id in PROBLEMS)
     if (PROBLEMS[id] == name) return id;
+  throw new Error("unknown problem name: " + name);
 }
 
 Workshopper({
@@ -20,7 +23,7 @@ Workshopper({
       return PROBLEMS[key];
     });
   },
-  preRun: function(cb) {
+  preMenu: function(cb) {
     if (fs.existsSync('app.js')) return cb();
     var copyCmd = process.platform == 'win32' ? 'copy' : 'cp';
     var appVuln = path.normalize(path.join(__dirname, '..',
@@ -31,6 +34,12 @@ Workshopper({
     console.log('When you are ready to begin the adventure, run ' +
                 this.name + ' again.\n');
     process.exit(1);
+  },
+  runVerifier: function(name, successCb) {
+    verify(problemIdFromName(name), function(exitCode) {
+      if (!exitCode) return successCb();
+      process.exit(exitCode);
+    });
   },
   showHelp: function() {
     console.log(readmeSections.help);
