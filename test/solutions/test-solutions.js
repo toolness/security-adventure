@@ -7,6 +7,7 @@ var child_process = require('child_process');
 var fork = child_process.fork;
 var spawn = child_process.spawn;
 
+var TEST_FILTER = process.env.TEST_FILTER;
 var ROOT_DIR = path.normalize(path.join(__dirname, '..', '..'));
 var APP_VULNERABLE = path.join(ROOT_DIR, 'app-vulnerable.js');
 var APP_PATCHED = path.join(ROOT_DIR, 'app-patched.js');
@@ -19,7 +20,10 @@ function newEnv(extras) {
   return newEnv;
 }
 
-Object.keys(PROBLEMS).forEach(function(name) {
+Object.keys(PROBLEMS).filter(function(name) {
+  if (!TEST_FILTER) return true;
+  return TEST_FILTER.indexOf(name) != -1;
+}).forEach(function(name) {
   test("problem " + name + " fails w/ app-vulnerable", function(t) {
     var child = fork(VERIFY, [name], {env: newEnv({
       APP_MODULE: APP_VULNERABLE,
